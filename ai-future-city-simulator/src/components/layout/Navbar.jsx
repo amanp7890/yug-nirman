@@ -12,7 +12,6 @@ import {
   AlertTriangle,
   Flame,
   Waves,
-  Car,
   ExternalLink,
   ShieldCheck,
   LogOut,
@@ -77,49 +76,50 @@ export const Navbar = () => {
   const getPageMeta = () => {
     const current = FLAT_NAVIGATION_ITEMS.find((item) => item.path === `${location.pathname}${location.hash}`)
       || FLAT_NAVIGATION_ITEMS.find((item) => item.path.split("#")[0] === location.pathname);
-    if (!current) return { title: "Command Center", subtitle: "City dashboard and public-data overview" };
+    if (!current) return { title: "City Overview", subtitle: "City overview and key indicators" };
 
     switch (current.path.split("#")[0]) {
       case "/":
-        return { title: "City Command Center", subtitle: "Current data, city context & scenarios" };
+      case "/dashboard":
+        return { title: "City Overview", subtitle: "Current conditions and key city indicators" };
       case "/digital-twin":
-        return { title: "City Digital Twin", subtitle: "OpenStreetMap features and public model conditions" };
+        return { title: "City Map", subtitle: "Map view, local areas, and air-quality stations" };
       case "/data-center":
-        return { title: "Data Center", subtitle: "Sources, coverage, and data trust" };
+        return { title: "Data Sources", subtitle: "Where our numbers come from and data status" };
       case "/intelligence-center":
-        return { title: "Intelligence Center", subtitle: "City alerts, signals, and available evidence" };
+        return { title: "City Alerts", subtitle: "Important city alerts and notifications" };
       case "/population-profile":
-        return { title: "Population Profile", subtitle: "Population profile and illustrative growth scenarios" };
+        return { title: "Population", subtitle: "Population numbers and growth estimates" };
       case "/city-problems":
-        return { title: "City Problems", subtitle: "Threshold-based city indicators" };
+        return { title: "City Problems", subtitle: "Areas and indicators that need attention" };
       case "/future-predictions":
-        return { title: "Future Predictions", subtitle: "Multi-Decade Urban Simulation Engine" };
+        return { title: "Future Outlook", subtitle: "Estimated city trends for coming years" };
       case "/what-if-simulator":
-        return { title: "What-If Simulator", subtitle: "Urban Policy Sandbox & Dynamic Impact Analyzer" };
+        return { title: "What-If Simulation", subtitle: "Test changes like planting trees or reducing traffic" };
       case "/scenario-comparison":
-        return { title: "Scenario Comparison", subtitle: "Cross-Model Trajectory Matrix" };
+        return { title: "Compare Scenarios", subtitle: "Compare baseline conditions with planning choices" };
       case "/transportation":
-        return { title: "Transportation & Transit", subtitle: "Arterial Congestion & Transit Fleet Optimization" };
+        return { title: "Traffic & Roads", subtitle: "Road traffic speed and travel conditions" };
       case "/environment":
-        return { title: "Environmental Conditions", subtitle: "Open-Meteo air-quality and weather model data" };
+        return { title: "Air & Weather", subtitle: "Air quality index and local weather conditions" };
       case "/climate-risks":
-        return { title: "Climate Risk Scenarios", subtitle: "Public weather context and what-if flood simulation" };
+        return { title: "Weather & Risk Checks", subtitle: "Checks for heavy rain, heat, and storms" };
       case "/ai-recommendations":
-        return { title: "Policy Decision Support", subtitle: "Review city insights and sample policy recommendations" };
+        return { title: "Planning Suggestions", subtitle: "Sample ideas and recommendations for city planning" };
       case "/sustainability":
-        return { title: "Sustainability Matrix", subtitle: "Clean Energy Transition & Circular Resource Metrics" };
+        return { title: "Energy & Water", subtitle: "Clean energy share, power use, and water demand" };
       case "/city-3d":
-        return { title: "3D City Visualizer", subtitle: "Interactive Volumetric WebGL Digital Twin" };
+        return { title: "3D City View", subtitle: "Illustrative 3D model of city blocks and roads" };
       case "/report-generation":
-        return { title: "Report Generation", subtitle: "Create and export city forecast assessments" };
+        return { title: "City Report", subtitle: "View and download city summary reports" };
       case "/settings":
-        return { title: "Simulator Settings", subtitle: "Local scenario and display preferences" };
+        return { title: "Settings", subtitle: "Display preferences and city options" };
       case "/history":
-        return { title: "My History", subtitle: "Your recent city simulator activity on this browser" };
+        return { title: "Recent Activity", subtitle: "Your recently viewed cities and actions" };
       case "/messages":
-        return { title: "Messages & Community Chat", subtitle: "Citizen support inquiries and administration discussions" };
+        return { title: "Messages", subtitle: "Community questions and notes" };
       default:
-        return { title: current.label, subtitle: "City simulator sample-data module" };
+        return { title: current.label, subtitle: "City data and planning module" };
     }
   };
 

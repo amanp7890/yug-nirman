@@ -474,7 +474,7 @@ export function buildReportSnapshot(input = {}) {
   const trafficStatus = !hasDataValue(trafficFlow)
     ? "UNAVAILABLE"
     : isSimulatedTraffic ? "SIMULATED" : "LIVE";
-  const livePopulation = normalizeValue(input.populationEstimate);
+  const livePopulation = input.population === null ? null : normalizeValue(input.populationEstimate);
   const scenario = makeScenario(input);
   const health = normalizeValue(input.cityHealth || {});
   const conditionMetrics = {
@@ -596,14 +596,14 @@ export function buildReportSnapshot(input = {}) {
       reason: input.liveTrafficFlowError || trafficFlow?.fallbackReason || (trafficFlow ? "" : "Traffic flow is not available."),
     },
     sensors: {
-      source: input.liveSensorStations?.[0]?.provider || "Sensor.Community",
-      status: input.liveSensorStations?.length
-        ? input.liveSensorStations.some(({ provider }) => provider === "Municipal IoT Sensor Grid") ? "SIMULATED" : "LIVE"
+      source: sensorStations.find((s) => s?.provider)?.provider || input.liveSensorStations?.[0]?.provider || "Sensor.Community",
+      status: sensorStations.length
+        ? (hasSyntheticSensors ? "SIMULATED" : "LIVE")
         : "UNAVAILABLE",
       reason: input.liveSensorsError || (sensorStations.length
-        ? hasSyntheticSensors
+        ? (hasSyntheticSensors
           ? "Sensor feed failed; city sensor values are simulated fallbacks."
-          : ""
+          : "")
         : "No valid sensor stations are connected."),
     },
     profiles: { source: "Bundled application city profiles", status: "ESTIMATED" },
@@ -679,8 +679,8 @@ export function buildReportSnapshot(input = {}) {
       incidents: trafficFlow?.incidents || "Not available from current data source",
       error: input.liveTrafficFlowError || trafficFlow?.fallbackReason || null,
     },
-    water: normalizeValue(input.water || {}),
-    energy: normalizeValue(input.energy || {}),
+    water: input.water ? normalizeValue(input.water) : null,
+    energy: input.energy ? normalizeValue(input.energy) : null,
     population: {
       profile: normalizeValue(input.population || {}),
       estimate: livePopulation,

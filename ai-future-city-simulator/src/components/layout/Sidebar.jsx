@@ -120,8 +120,8 @@ export const NAVIGATION_ITEMS = [
       },
       {
         path: "/climate-risks",
-        label: "Climate & Risk Intelligence",
-        sublabel: "Weather, hazards, and actions",
+        label: "Weather & Risk Checks",
+        sublabel: "Rain, heat, and storm checks",
         icon: Waves,
         alert: true,
       },

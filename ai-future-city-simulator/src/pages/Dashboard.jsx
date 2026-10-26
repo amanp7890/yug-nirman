@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import BrandMark from "../components/common/BrandMark";
 import FeatureWhy from "../components/common/FeatureWhy";
@@ -1249,6 +1250,86 @@ export const Dashboard = () => {
           </div>
         )}
       </div>
+
+      {/* ══════════════════════════════════════════════════════
+          2b. QUICK CITY GUIDE: 3 SIMPLE QUESTIONS
+      ══════════════════════════════════════════════════════ */}
+      <section aria-labelledby="city-guide-heading" className="dashboard-glass-panel rounded-2xl border border-teal-500/25 bg-slate-900/90 p-5 shadow-xl">
+        <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-800">
+          <Sparkles className="w-4 h-4 text-teal-400" />
+          <h2 id="city-guide-heading" className="text-sm font-bold tracking-wide text-white uppercase">
+            Quick City Guide for {city.name}
+          </h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Question 1: What is happening? */}
+          <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 flex flex-col justify-between">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-teal-400">1. What is happening?</span>
+              <h3 className="text-sm font-bold text-white mt-1">Current City Conditions</h3>
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                {liveWeather?.temperature_2m != null 
+                  ? `Weather is ${Number(liveWeather.temperature_2m).toFixed(1)}°C with ${Number(liveWeather.relative_humidity_2m || 0).toFixed(0)}% humidity.` 
+                  : "Fetching current weather."}
+                {" "}
+                {currentModelAqi != null 
+                  ? `Air Quality is ${Math.round(currentModelAqi)} (${modelAqiScale}).` 
+                  : `AQI baseline is ${dynamicMetrics.aqi.display}.`}
+                {" "}
+                {liveTrafficFlow 
+                  ? `Road speed near reference point is ${liveTrafficFlow.currentSpeed} km/h.` 
+                  : `Traffic delay is around ${dynamicMetrics.traffic.display}.`}
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Green Cover: {dynamicMetrics.greenCover.display}</span>
+              <span className="text-teal-400 font-semibold">Health Score: {city.healthScore?.overall || 76}/100</span>
+            </div>
+          </div>
+
+          {/* Question 2: Where can I explore? */}
+          <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 flex flex-col justify-between">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400">2. Where can I explore?</span>
+              <h3 className="text-sm font-bold text-white mt-1">Interactive Maps & Feeds</h3>
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                Explore streets, public sensors, and detailed service monitors:
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-slate-800 flex flex-wrap gap-2">
+              <Link to="/digital-twin" className="px-2.5 py-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-xs font-semibold text-sky-200 transition-colors">
+                City Map →
+              </Link>
+              <Link to="/environment" className="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-xs font-semibold text-emerald-200 transition-colors">
+                Air & Weather →
+              </Link>
+              <Link to="/transportation" className="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-xs font-semibold text-amber-200 transition-colors">
+                Traffic →
+              </Link>
+            </div>
+          </div>
+
+          {/* Question 3: What can I do next? */}
+          <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 flex flex-col justify-between">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">3. What can I do next?</span>
+              <h3 className="text-sm font-bold text-white mt-1">Simulations & Reports</h3>
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                Test urban policy choices or generate a city summary report:
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-slate-800 flex flex-wrap gap-2">
+              <Link to="/what-if-simulator" className="px-2.5 py-1 rounded-lg bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-xs font-semibold text-teal-200 transition-colors">
+                Run What-If Scenario →
+              </Link>
+              <Link to="/report-generation" className="px-2.5 py-1 rounded-lg bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/30 text-xs font-semibold text-violet-200 transition-colors">
+                View City Report →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ══════════════════════════════════════════════════════
           3. KPI CARDS (6 City Metrics) with Interactive Click Inspector

@@ -29,7 +29,7 @@ const completeInput = (overrides = {}) => {
   const liveWeather = {
     time: 1_800_000_000,
     temperature_2m: 31,
-    apparent_temperature: 33,
+    apparent_temperature: 31,
     relative_humidity_2m: 50,
     precipitation: 2,
     wind_speed_10m: 12,

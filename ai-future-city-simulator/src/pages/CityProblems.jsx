@@ -7,8 +7,8 @@ export default function CityProblems() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Possible City Problems"
-        subtitle="See which indicators may need attention."
+        title="City Issues & Fixes"
+        subtitle="Identify key city indicators that need attention and practical ways to solve them."
         icon={AlertTriangle}
         whyFeatureIds={["traffic-intelligence", "pollution-detection", "infrastructure-risk"]}
       />

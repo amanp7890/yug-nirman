@@ -1685,10 +1685,10 @@ export const City3D = ({ embedded = false }) => {
   return (
     <div className={embedded ? "space-y-3" : "space-y-6"}>
       {!embedded && <PageHeader
-        title={`${cityName.toUpperCase()} DIGITAL TWIN`}
-        subtitle="Explore an example 3D city. The buildings and figures are illustrative."
+        title={`${cityName} 3D City View`}
+        subtitle="Explore an illustrative 3D model of city blocks and roads. Not an exact replica of real buildings."
         icon={Boxes}
-        badge="3D demo"
+        badge="Illustrative 3D"
         whyFeatureIds="digital-city-twin"
         actions={
           <div className="flex items-center gap-2">
@@ -1705,9 +1705,9 @@ export const City3D = ({ embedded = false }) => {
 
             <div className="bg-slate-900/90 p-1 rounded-xl border border-cyan-500/30 flex items-center gap-1 backdrop-blur-md">
               {[
-                ["traffic", "Demo Traffic Heat", "bg-rose-500 text-white"],
-                ["energy", "Demo Grid Load", "bg-purple-500 text-white"],
-                ["default", "Default", "bg-cyan-500 text-slate-950 font-bold"]
+                ["traffic", "Traffic View", "bg-rose-500 text-white"],
+                ["energy", "Energy Grid", "bg-purple-500 text-white"],
+                ["default", "Standard View", "bg-cyan-500 text-slate-950 font-bold"]
               ].map(([k, label, onClass]) => (
                 <button
                   type="button"

@@ -1,4 +1,51 @@
-# YUG NIRMAN | AI Future City Simulator
+# YUG NIRMAN | Human-Centered Urban Intelligence Platform
+
+YUG NIRMAN is an urban intelligence and city-planning application. It helps students, city planners, and researchers explore how urban systems like traffic, air quality, weather, green spaces, energy, and water interact in Indian and global cities.
+
+---
+
+## 1. Key Concepts in Simple English
+
+When presenting this project during a viva or project demonstration, use these simple explanations:
+
+- **Digital Model**: A 3D or 2D computer representation of a city's layout, roads, and buildings.
+- **Scenario**: A hypothetical change we want to test (for example: adding 50 km of metro lines or planting 20% more trees).
+- **Simulation**: A mathematical calculation that calculates what might happen under those conditions.
+- **Data Source**: Where the numbers come from (such as live Open-Meteo weather models, OpenStreetMap roads, or bundled baseline planning profiles).
+- **Estimate**: An approximate value calculated from available information when exact sensor readings are not directly available.
+
+---
+
+## 2. Quick Viva Presentation Guide (How to Explain in 3 Minutes)
+
+1. **What is YUG NIRMAN?**
+   > "YUG NIRMAN is an urban intelligence platform. It brings together city maps, environmental conditions, traffic data, and what-if simulation into a clean dashboard."
+2. **What problem does it solve?**
+   > "Urban problems are connected. If traffic increases, air pollution rises. If temperatures soar, water and electricity demands spike. Our platform helps planners test policies—like adding metro corridors or green canopy—and see the estimated impacts before spending money."
+3. **What technologies did we use?**
+   > "We built the frontend using React 19 and Vite with Tailwind CSS. Maps are rendered with Leaflet and React-Leaflet. The 3D view uses Three.js. Charts are powered by Recharts. Real-time weather and air-quality come from Open-Meteo APIs."
+4. **Is it real or simulated?**
+   > "We believe in honest data. Weather and air quality are fetched live from public models. Map roads and markers come from OpenStreetMap. Policy simulations and future trajectories use transparent mathematical formulas that we can easily explain and verify."
+
+---
+
+## 3. Quick Start & Testing
+
+```sh
+# 1. Install dependencies
+npm install
+
+# 2. Run all 77 automated unit tests
+npm test
+
+# 3. Start local development server
+npm run dev
+
+# 4. Create production build
+npm run build
+```
+
+---
 
 ## Netlify deployment
 

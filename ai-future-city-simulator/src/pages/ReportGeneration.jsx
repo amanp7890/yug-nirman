@@ -1928,8 +1928,8 @@ const ReportGeneration = () => {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5">
       <PageHeader
-        title="Urban Intelligence Report"
-        subtitle="A concise city decision report: current indicators, emerging risks, trends, actions, and data limitations."
+        title="City Report"
+        subtitle="A concise city summary report: current indicators, emerging risks, trends, actions, and data limitations."
         badge="Snapshot report"
       />
       <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-cyan-500/20 bg-slate-950/70 p-4">

@@ -54,6 +54,18 @@ export const summarizeReportDataGaps = (
   let missingHistoricalPopulation = false;
   const missingForecastYears = new Set();
 
+  const flushPopulationSummaries = () => {
+    if (missingHistoricalPopulation) {
+      summaries.add("Population history — verified data unavailable");
+      missingHistoricalPopulation = false;
+    }
+    if (missingForecastYears.size) {
+      const years = [...missingForecastYears].sort((left, right) => left - right).join(", ");
+      summaries.add(`Population forecast — values unavailable for ${years}`);
+      missingForecastYears.clear();
+    }
+  };
+
   paths.forEach((path) => {
     const populationSeriesMatch = String(path).match(
       /^populationProfile\.historyAndForecast\[(\d+)\]\.(actual|predicted)$/,
@@ -75,6 +87,8 @@ export const summarizeReportDataGaps = (
       return;
     }
 
+    flushPopulationSummaries();
+
     const parts = String(path).replace(/\[\d+\]/g, "").split(".").filter(Boolean);
     const group = GROUP_LABELS[parts[0]] || humanize(parts[0] || "City indicator");
     const metric = parts.at(-1);
@@ -83,13 +97,7 @@ export const summarizeReportDataGaps = (
       : `${group} unavailable`);
   });
 
-  if (missingHistoricalPopulation) {
-    summaries.add("Population history — verified data unavailable");
-  }
-  if (missingForecastYears.size) {
-    const years = [...missingForecastYears].sort((left, right) => left - right).join(", ");
-    summaries.add(`Population forecast — values unavailable for ${years}`);
-  }
+  flushPopulationSummaries();
 
   return [...summaries].slice(0, Math.max(0, limit));
 };

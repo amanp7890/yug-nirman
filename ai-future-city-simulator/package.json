@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
+    "test": "node --test src/utils/*.test.js src/data/*.test.js api-worker/src/index.test.js",
     "test:climate-risk": "node --test src/utils/climateRiskEngine.test.js",
     "test:diagnosis": "node --test src/utils/cityDiagnosis.test.js",
     "test:city-health": "node --test src/utils/cityHealthScore.test.js",

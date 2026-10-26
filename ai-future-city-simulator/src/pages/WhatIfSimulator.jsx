@@ -152,10 +152,10 @@ export const WhatIfSimulator = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="What-If Scenario"
-        subtitle="Change the settings to explore example results, not official city forecasts."
+        title="What-If Simulation"
+        subtitle="Test changes like expanding the metro or planting trees to see estimated results."
         icon={FlaskConical}
-        badge="Scenario simulator"
+        badge="Scenario test"
         whyFeatureIds="what-if-scenarios"
         actions={
           <div className="flex items-center gap-2">
@@ -164,7 +164,7 @@ export const WhatIfSimulator = () => {
               className="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Defaults</span>
+              <span>Reset Values</span>
             </button>
             <button
               onClick={handleRunSimulation}
@@ -172,7 +172,7 @@ export const WhatIfSimulator = () => {
               className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 text-slate-950 text-xs font-extrabold flex items-center gap-2 shadow-lg shadow-cyan-500/25 hover:brightness-110 transition-all cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
-              <span>{isSimulating ? "Capturing scenario..." : "Run simulation"}</span>
+              <span>{isSimulating ? "Calculating..." : "Run Scenario"}</span>
             </button>
           </div>
         }
@@ -188,9 +188,9 @@ export const WhatIfSimulator = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {[
-            { key: "utopia", label: "🌿 Eco-Utopia 2040", desc: "Max Greening & 90% Clean Grid" },
-            { key: "transit", label: "🚆 Transit-First Mesh", desc: "Mass Metro + Peak Congestion Toll" },
-            { key: "budget", label: "💰 Fiscal Prudence", desc: "CapEx Constrained Optimization" },
+            { key: "utopia", label: "🌿 Green City", desc: "More trees and clean energy" },
+            { key: "transit", label: "🚆 Transit First", desc: "Metro expansion and road tolls" },
+            { key: "budget", label: "💰 Low-Cost Plan", desc: "Budget-friendly options" },
           ].map((preset) => (
             <button
               key={preset.key}

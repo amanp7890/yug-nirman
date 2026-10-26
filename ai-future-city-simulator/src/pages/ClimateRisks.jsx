@@ -701,7 +701,7 @@ export const ClimateRisks = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Climate & Risk Intelligence"
+        title="Weather & Risk Checks"
         subtitle={`Understand current weather-model signals and what they may mean for ${city.name}.`}
         icon={ShieldCheck}
         badge="Public model data"

@@ -22,7 +22,7 @@ export const ScenarioComparison = () => {
     return [
       {
         id: "baseline",
-        name: "Status Quo",
+        name: "Current City (No Changes)",
         subtitle: "Baseline (Current City Condition)",
         tagline: "Continued growth with minimal policy intervention based on actual city profile.",
         accent: "slate",
@@ -39,7 +39,7 @@ export const ScenarioComparison = () => {
       },
       {
         id: "green",
-        name: "Aggressive Green Transition",
+        name: "Green City Plan",
         subtitle: "Eco-Mobility & Clean Grid",
         tagline: "Electrified mass mobility, urban bioswales, and distributed solar mandates.",
         accent: "emerald",
@@ -56,7 +56,7 @@ export const ScenarioComparison = () => {
       },
       {
         id: "hyperdense",
-        name: "Hyper-Dense Urbanization",
+        name: "High-Density Transit Plan",
         subtitle: "High Density & Transit Mesh",
         tagline: "Vertical clusters with high-capacity transit corridors and congestion pricing.",
         accent: "cyan",
@@ -99,9 +99,9 @@ export const ScenarioComparison = () => {
         <div className="flex items-center gap-3">
           <Sliders className="h-5 w-5 shrink-0 text-cyan-300" />
           <div>
-            <h2 className="text-sm font-bold uppercase tracking-wide text-white">Investment scaling & policy intensity</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wide text-white">Investment Level & Scale</h2>
             <p className="text-xs text-slate-400">
-              Modulates capital expenditure, transit corridor length, and green infrastructure deployment intensity.
+              Adjust the funding level to see how higher or lower investment changes estimated results.
             </p>
           </div>
         </div>
