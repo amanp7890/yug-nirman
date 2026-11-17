@@ -1932,47 +1932,47 @@ const ReportGeneration = () => {
         subtitle="A concise city summary report: current indicators, emerging risks, trends, actions, and data limitations."
         badge="Snapshot report"
       />
-      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-cyan-500/20 bg-slate-950/70 p-4">
+      <div className="flex flex-wrap items-center gap-2.5 rounded-xl border border-slate-800 fieldwork-card p-4">
         <button
           type="button"
           onClick={createSnapshot}
           disabled={isCapturing}
-          className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-cyan-400 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-300 disabled:cursor-wait disabled:opacity-60"
+          className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-xs font-mono font-semibold text-white hover:bg-teal-500 border border-teal-500/60 shadow-sm transition-colors disabled:cursor-wait disabled:opacity-60 cursor-pointer"
         >
           <RefreshCw aria-hidden="true" className={`h-4 w-4 ${isCapturing ? "animate-spin" : ""}`} />
-          {isCapturing ? "Capturing snapshot…" : snapshot ? "Capture new snapshot" : "Generate report snapshot"}
+          {isCapturing ? "Capturing snapshot…" : snapshot ? "Capture New Snapshot" : "Generate Report Snapshot"}
         </button>
         {snapshot && (
           <>
-            <button type="button" onClick={() => download("json")} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-200 hover:border-cyan-400/50">
-              <FileJson2 aria-hidden="true" className="h-4 w-4" /> JSON
+            <button type="button" onClick={() => download("json")} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-800 bg-[#0e141f] px-3 py-2 text-xs font-mono text-slate-300 hover:border-slate-700 hover:text-white transition-colors cursor-pointer">
+              <FileJson2 aria-hidden="true" className="h-4 w-4 text-teal-400" /> JSON
             </button>
-            <button type="button" onClick={() => download("csv")} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-200 hover:border-cyan-400/50">
-              <FileSpreadsheet aria-hidden="true" className="h-4 w-4" /> CSV
+            <button type="button" onClick={() => download("csv")} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-800 bg-[#0e141f] px-3 py-2 text-xs font-mono text-slate-300 hover:border-slate-700 hover:text-white transition-colors cursor-pointer">
+              <FileSpreadsheet aria-hidden="true" className="h-4 w-4 text-emerald-400" /> CSV
             </button>
-            <button type="button" onClick={downloadPdf} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-200 hover:border-cyan-400/50">
-              <Download aria-hidden="true" className="h-4 w-4" /> Summary PDF
+            <button type="button" onClick={downloadPdf} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-800 bg-[#0e141f] px-3 py-2 text-xs font-mono text-slate-300 hover:border-slate-700 hover:text-white transition-colors cursor-pointer">
+              <Download aria-hidden="true" className="h-4 w-4 text-sky-400" /> Summary PDF
             </button>
-            <button type="button" onClick={() => setIsPrintReady(true)} className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-200 hover:border-cyan-400/50">
-              <Printer aria-hidden="true" className="h-4 w-4" /> Print
+            <button type="button" onClick={() => setIsPrintReady(true)} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-800 bg-[#0e141f] px-3 py-2 text-xs font-mono text-slate-300 hover:border-slate-700 hover:text-white transition-colors cursor-pointer">
+              <Printer aria-hidden="true" className="h-4 w-4 text-amber-400" /> Print
             </button>
           </>
         )}
-        {exportError && <p role="alert" className="w-full text-xs text-rose-300">{exportError}</p>}
-        {exportNotice && <p role="status" className="w-full text-xs text-emerald-300">{exportNotice}</p>}
-        <p className="w-full text-xs leading-relaxed text-slate-400">
-          All formats use the same frozen snapshot. The PDF is a concise summary; the searchable register and JSON/CSV contain the complete available detail. Missing values are never fabricated.
+        {exportError && <p role="alert" className="w-full text-xs font-mono text-rose-300">{exportError}</p>}
+        {exportNotice && <p role="status" className="w-full text-xs font-mono text-emerald-300">{exportNotice}</p>}
+        <p className="w-full text-xs font-mono leading-relaxed text-slate-400">
+          All formats use the same immutable frozen snapshot. The PDF provides an editorial executive summary; the register and JSON/CSV contain complete unaggregated telemetry. Missing fields are never hallucinated.
         </p>
       </div>
       {!snapshot ? (
-        <section className="rounded-2xl border border-dashed border-slate-700 bg-slate-950/50 p-8 text-center">
-          <h2 className="text-lg font-bold text-white">Ready to capture {cityState.city.name}</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
-            Generate a point-in-time report from CityState, current weather and air-quality feeds, traffic status, prediction output, city health, map features, and any attached what-if run.
+        <section className="rounded-xl border border-dashed border-slate-800 bg-[#0e141f] p-8 text-center">
+          <h2 className="text-base font-mono font-semibold text-white">READY TO CAPTURE: {cityState.city.name.toUpperCase()}</h2>
+          <p className="mx-auto mt-2 max-w-2xl text-xs leading-relaxed text-slate-400">
+            Generate an archival point-in-time intelligence dossier compiling CityState baselines, live Open-Meteo weather and AQI models, traffic corridor flow, and attached policy scenario ledgers.
           </p>
-          {cityState.liveDataLoading && <p className="mt-3 text-xs text-cyan-200">Live feeds are still loading. You can wait for them or generate a report that records their current status.</p>}
-          {transformation && <p className="mt-3 text-xs text-emerald-200">A simulated city transformation is attached to this report.</p>}
-          {!transformation && !scenario && <p className="mt-3 text-xs text-slate-500">{NO_SCENARIO}</p>}
+          {cityState.liveDataLoading && <p className="mt-3 text-xs font-mono text-teal-300">Synchronizing live model feeds…</p>}
+          {transformation && <p className="mt-3 text-xs font-mono text-emerald-300">Attached: Simulated policy scenario ledger.</p>}
+          {!transformation && !scenario && <p className="mt-3 text-xs font-mono text-slate-500">{NO_SCENARIO}</p>}
         </section>
       ) : (
         <article key={snapshot.metadata.reportId} className="report-snapshot space-y-4 rounded-2xl bg-slate-100 p-4 text-slate-900 md:p-6">

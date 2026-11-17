@@ -29,6 +29,12 @@ import UserHistory        from "./pages/UserHistory";
 import PopulationProfile  from "./pages/PopulationProfile";
 import IntelligenceCenter from "./pages/IntelligenceCenter";
 
+import ExploreCity         from "./pages/ExploreCity";
+import ProblemsAndInsights from "./pages/ProblemsAndInsights";
+import ActionPlanner       from "./pages/ActionPlanner";
+import ScenarioPlanner     from "./pages/ScenarioPlanner";
+import ImplementationTracker from "./pages/ImplementationTracker";
+
 const City3D = lazy(() => import("./pages/City3D"));
 
 /* Protected route — requires login */
@@ -64,33 +70,44 @@ function AppRoutes() {
 
       {/* Main app layout routes */}
       <Route path="/" element={<PrivateRoute><MainLayout /></PrivateRoute>}>
-        <Route path="dashboard"          element={<Dashboard />} />
-        <Route path="data-center"        element={<DataCenter />} />
+        {/* Core 8-Section Decision Workflow */}
+        <Route path="dashboard"               element={<Dashboard />} />
+        <Route path="explore"                 element={<ExploreCity />} />
+        <Route path="problems"                element={<ProblemsAndInsights />} />
+        <Route path="action-planner"          element={<ActionPlanner />} />
+        <Route path="scenario-planner"        element={<ScenarioPlanner />} />
+        <Route path="scenario-lab"            element={<ScenarioPlanner />} />
+        <Route path="implementation-tracker"  element={<ImplementationTracker />} />
+        <Route path="tracker"                 element={<ImplementationTracker />} />
+        <Route path="reports"                 element={<ReportGeneration />} />
+
+        {/* Backwards-compatible routes */}
+        <Route path="digital-twin"       element={<ExploreCity />} />
+        <Route path="city-problems"      element={<ProblemsAndInsights />} />
+        <Route path="intelligence-center" element={<ProblemsAndInsights />} />
+        <Route path="what-if-simulator"  element={<ScenarioPlanner />} />
+        <Route path="scenario-comparison" element={<ScenarioPlanner />} />
+        <Route path="ai-recommendations" element={<ActionPlanner />} />
+        <Route path="report-generation"  element={<ReportGeneration />} />
         <Route path="city-health"        element={<CityHealth />} />
-        <Route path="city-problems"      element={<CityProblems />} />
-        <Route path="digital-twin"       element={<DigitalTwin />} />
+        <Route path="climate-risks"      element={<ClimateRisks />} />
         <Route path="future-predictions" element={<FuturePredictions />} />
-        <Route path="what-if-simulator"  element={<WhatIfSimulator />} />
-        <Route path="scenario-comparison" element={<ScenarioComparison />} />
         <Route path="transportation"     element={<Transportation />} />
         <Route path="environment"        element={<Environment />} />
-        <Route path="climate-risks"      element={<ClimateRisks />} />
-        <Route path="ai-recommendations" element={<AIRecommendations />} />
         <Route path="sustainability"     element={<Sustainability />} />
+        <Route path="data-center"        element={<DataCenter />} />
         <Route
           path="city-3d"
           element={
-            <Suspense fallback={<div role="status" className="rounded-2xl border border-cyan-500/20 bg-slate-950/60 p-6 text-sm text-slate-300">Loading interactive 3D city scene…</div>}>
+            <Suspense fallback={<div role="status" className="rounded-2xl border border-slate-800 bg-slate-950/60 p-6 text-sm text-slate-300">Loading interactive 3D city scene…</div>}>
               <City3D />
             </Suspense>
           }
         />
-        <Route path="report-generation"  element={<ReportGeneration />} />
         <Route path="settings"           element={<Settings />} />
         <Route path="history"            element={<UserHistory />} />
         <Route path="messages"           element={<MessagesCenter />} />
         <Route path="population-profile" element={<PopulationProfile />} />
-        <Route path="intelligence-center" element={<IntelligenceCenter />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

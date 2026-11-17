@@ -82,6 +82,20 @@ export const Navbar = () => {
       case "/":
       case "/dashboard":
         return { title: "City Overview", subtitle: "Current conditions and key city indicators" };
+      case "/explore":
+        return { title: "Explore City", subtitle: "Interactive 2D spatial maps and urban telemetry" };
+      case "/problems":
+        return { title: "Problems & Insights", subtitle: "Evidence screening and threshold breach diagnosis" };
+      case "/action-planner":
+        return { title: "City Action Planner", subtitle: "Multi-criteria decision analysis and intervention ranking" };
+      case "/scenario-planner":
+      case "/scenario-lab":
+        return { title: "Scenario Lab", subtitle: "Simulate and compare baseline vs proposed intervention outcomes" };
+      case "/implementation-tracker":
+      case "/tracker":
+        return { title: "Implementation Tracker", subtitle: "Municipal project registry, milestones, and KPI delivery" };
+      case "/reports":
+        return { title: "Reports & Analysis", subtitle: "Audited decision records and planning exports" };
       case "/digital-twin":
         return { title: "City Map", subtitle: "Map view, local areas, and air-quality stations" };
       case "/data-center":
@@ -134,32 +148,32 @@ export const Navbar = () => {
 
   return (
     <header
-      className={`sticky top-0 z-30 bg-[#080d19]/90 backdrop-blur-md border-b border-cyan-500/15 transition-all duration-300 ${sidebarCollapsed ? "lg:pl-[76px]" : "lg:pl-64"
+      className={`sticky top-0 z-30 bg-[#0c1017]/95 backdrop-blur-md border-b border-slate-800 transition-all duration-300 ${sidebarCollapsed ? "lg:pl-[76px]" : "lg:pl-64"
         }`}
     >
-      <div className="flex items-center justify-between px-4 lg:px-6 h-[72px]">
+      <div className="flex items-center justify-between px-4 lg:px-6 h-16">
         {/* Left: Mobile hamburger + Page Title */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-700/50"
+            className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
             aria-label="Open navigation menu"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-4 h-4" />
           </button>
 
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-2">
+              <h1 className="text-base sm:text-lg font-bold text-slate-100 tracking-tight flex items-center gap-2">
                 <span>{title}</span>
               </h1>
-              <span className="hidden md:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
-                CITY WORKSPACE
+              <span className="hidden md:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                ACTIVE
               </span>
               {city.dataMode === "illustrative" && (
                 <span
-                  className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30"
+                  className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20"
                   title="This city's dashboard indicators use an illustrative template. The map uses its selected coordinates and public data."
                 >
                   ILLUSTRATIVE METRICS
@@ -178,10 +192,10 @@ export const Navbar = () => {
           <div className="relative" ref={cityRef}>
             <button
               onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-cyan-500/30 hover:border-cyan-400/60 text-xs font-semibold text-slate-200 transition-all duration-200 shadow-md shadow-cyan-500/5"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/80 hover:border-slate-600 text-xs font-medium text-slate-200 transition-colors shadow-sm"
             >
-              <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-cyan-300">{city.name}</span>
+              <MapPin className="w-3.5 h-3.5 text-teal-400" />
+              <span className="text-slate-100 font-semibold">{city.name}</span>
               <ChevronDown
                 className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${cityDropdownOpen ? "rotate-180" : ""
                   }`}
@@ -189,9 +203,9 @@ export const Navbar = () => {
             </button>
 
             {cityDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-52 max-h-[70vh] overflow-y-auto rounded-xl bg-slate-900/95 border border-cyan-500/30 shadow-2xl backdrop-blur-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-56 max-h-[70vh] overflow-y-auto rounded-lg bg-slate-900 border border-slate-700 shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
                 <div className="px-2.5 py-1.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                  Select Active City Twin
+                  Select Active City
                 </div>
                 {citiesList.map((c) => (
                   <button
@@ -200,9 +214,9 @@ export const Navbar = () => {
                       setSelectedCity(c.id);
                       setCityDropdownOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium text-left transition-colors ${selectedCity === c.id
-                        ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
-                        : "text-slate-300 hover:bg-slate-800/80 hover:text-white"
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-md text-xs font-medium text-left transition-colors ${selectedCity === c.id
+                        ? "bg-teal-500/15 text-teal-300 border border-teal-500/30"
+                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
                       }`}
                   >
                     <div>
@@ -210,7 +224,7 @@ export const Navbar = () => {
                       <div className="text-[10px] text-slate-400">{c.country || c.state}</div>
                     </div>
                     {selectedCity === c.id && (
-                      <CheckCircle className="w-3.5 h-3.5 text-cyan-400" />
+                      <CheckCircle className="w-3.5 h-3.5 text-teal-400" />
                     )}
                   </button>
                 ))}
@@ -219,8 +233,8 @@ export const Navbar = () => {
           </div>
 
           {/* Real-time Clock */}
-          <div className="hidden xl:flex flex-col items-end px-3 py-1 rounded-xl bg-slate-900/70 border border-slate-800">
-            <span className="font-mono text-xs font-semibold text-cyan-300 tracking-wider">
+          <div className="hidden xl:flex flex-col items-end px-3 py-1 rounded-lg bg-slate-900/60 border border-slate-800">
+            <span className="font-mono text-xs font-semibold text-slate-200 tracking-wider">
               {currentTime || "12:00:00 PM"}
             </span>
             <span className="text-[10px] text-slate-400 font-medium">
@@ -232,23 +246,23 @@ export const Navbar = () => {
           <div className="relative" ref={searchRef}>
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 transition-all duration-200"
-              title="Quick Search (Ctrl+K)"
+              className="p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition-colors"
+              title="Quick Search"
             >
               <Search className="w-4 h-4" />
             </button>
 
             {searchOpen && (
-              <div className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-slate-900/95 border border-cyan-500/30 shadow-2xl backdrop-blur-xl p-3 z-50">
+              <div className="absolute right-0 mt-2 w-72 sm:w-80 rounded-lg bg-slate-900 border border-slate-700 shadow-xl p-3 z-50">
                 <div className="relative">
-                  <Search className="w-4 h-4 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search modules, telemetry, zones..."
+                    placeholder="Search city modules..."
                     autoFocus
-                    className="w-full pl-9 pr-3 py-2 bg-slate-950/80 border border-cyan-500/20 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-700 rounded-md text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-500"
                   />
                 </div>
 
@@ -286,32 +300,32 @@ export const Navbar = () => {
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotificationOpen(!notificationOpen)}
-              className="relative p-2 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 transition-all duration-200"
+              className="relative p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition-colors"
               title="City Alerts"
             >
               <Bell className="w-4 h-4" />
               {unreadAlertCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-rose-500/50">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold flex items-center justify-center">
                   {unreadAlertCount}
                 </span>
               )}
             </button>
 
             {notificationOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-slate-900/95 border border-cyan-500/30 shadow-2xl backdrop-blur-xl p-3 z-50">
-                <div className="flex items-center justify-between pb-2 mb-2 border-b border-cyan-500/15">
+              <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-lg bg-slate-900 border border-slate-700 shadow-xl p-3 z-50">
+                <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-white">
-                      Sample City Alerts
+                      City Alerts
                     </span>
-                    <span className="px-1.5 py-0.2 text-[10px] font-semibold rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                    <span className="px-1.5 py-0.2 text-[10px] font-semibold rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
                       {unreadAlertCount} New
                     </span>
                   </div>
                   {unreadAlertCount > 0 && (
                     <button
                       onClick={markAllAlertsAsRead}
-                      className="text-[11px] text-cyan-400 hover:underline"
+                      className="text-[11px] text-teal-400 hover:underline"
                     >
                       Mark all as read
                     </button>

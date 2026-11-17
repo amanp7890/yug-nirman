@@ -1,50 +1,50 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FlaskConical, Sparkles, MapPin, Bot, ArrowRight } from "lucide-react";
+import { Compass, AlertTriangle, MapPin, CheckCircle2, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const QuickActions = () => {
   const actions = [
     {
-      title: "Try a What-If Scenario",
-      subtitle: "Change example settings for transit, electric cars, trees, road tolls, and solar power.",
-      icon: FlaskConical,
-      path: "/what-if-simulator",
-      color: "from-emerald-500/20 to-teal-600/10",
-      border: "border-emerald-500/30 hover:border-emerald-400",
-      iconColor: "text-emerald-400",
-      iconBg: "bg-emerald-500/10 border-emerald-500/30"
-    },
-    {
-      title: "View Forecasts",
-      subtitle: "See short-term weather and air forecasts plus example long-term scenarios.",
-      icon: Sparkles,
-      path: "/future-predictions",
-      color: "from-purple-500/20 to-indigo-600/10",
-      border: "border-purple-500/30 hover:border-purple-400",
-      iconColor: "text-purple-400",
-      iconBg: "bg-purple-500/10 border-purple-500/30"
-    },
-    {
-      title: "Open the City Map",
-      subtitle: "Explore public map features and current weather and air information.",
+      title: "Explore City Spatial Map",
+      subtitle: "Investigate 2D/3D arterial flow speeds, public transit lines, and sensor grids.",
       icon: MapPin,
-      path: "/digital-twin",
-      color: "from-cyan-500/20 to-blue-600/10",
+      path: "/explore",
+      color: "from-cyan-500/15 to-blue-600/10",
       border: "border-cyan-500/30 hover:border-cyan-400",
       iconColor: "text-cyan-400",
-      iconBg: "bg-cyan-500/10 border-cyan-500/30"
+      iconBg: "bg-cyan-500/10 border-cyan-500/30",
     },
     {
-      title: "View Planning Ideas",
-      subtitle: "Review example ideas for city planning.",
-      icon: Bot,
-      path: "/ai-recommendations",
-      color: "from-blue-500/20 to-indigo-600/10",
-      border: "border-blue-500/30 hover:border-blue-400",
-      iconColor: "text-blue-400",
-      iconBg: "bg-blue-500/10 border-blue-500/30"
-    }
+      title: "Diagnose Active Problems",
+      subtitle: "Screen municipal threshold breaches across mobility, air quality, flooding, and energy.",
+      icon: AlertTriangle,
+      path: "/problems",
+      color: "from-amber-500/15 to-rose-600/10",
+      border: "border-amber-500/30 hover:border-amber-400",
+      iconColor: "text-amber-400",
+      iconBg: "bg-amber-500/10 border-amber-500/30",
+    },
+    {
+      title: "City Action Planner (MCDA)",
+      subtitle: "Rank candidate interventions using transparent multi-criteria decision analysis.",
+      icon: Compass,
+      path: "/action-planner",
+      color: "from-teal-500/15 to-emerald-600/10",
+      border: "border-teal-500/30 hover:border-teal-400",
+      iconColor: "text-teal-400",
+      iconBg: "bg-teal-500/10 border-teal-500/30",
+    },
+    {
+      title: "Implementation Tracker",
+      subtitle: "Track committed capital projects from approval to milestone delivery and KPI verification.",
+      icon: CheckCircle2,
+      path: "/implementation-tracker",
+      color: "from-indigo-500/15 to-purple-600/10",
+      border: "border-indigo-500/30 hover:border-indigo-400",
+      iconColor: "text-indigo-400",
+      iconBg: "bg-indigo-500/10 border-indigo-500/30",
+    },
   ];
 
   return (

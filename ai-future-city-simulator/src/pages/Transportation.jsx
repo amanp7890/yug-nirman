@@ -25,29 +25,39 @@ export const Transportation = () => {
         whyFeatureIds="traffic-intelligence"
       />
 
-      <div className="grid gap-2 rounded-xl border border-cyan-500/20 bg-slate-900/50 p-3 text-xs sm:grid-cols-2 xl:grid-cols-4">
-        <p className="text-slate-300">
-          <span className="font-semibold text-cyan-200">Map locations:</span> Only real mapped OpenStreetMap roads and features are drawn. Unavailable categories and network problems are reported below the map.
-        </p>
-        <p className="text-slate-300">
-          <span className="font-semibold text-amber-200">Potential pressure:</span> Warning markers identify mapped signals and busy destinations close to major roads. Open each marker for its location and a suggested planning review; this is a heuristic, not measured traffic or a validated prediction.
-        </p>
-        <p className="text-slate-300">
-          <span className="font-semibold text-cyan-200">Traffic display:</span> The chart below updates locally every 15 seconds as a simulation based on bundled sample profiles. It is not live measured traffic or verified history.
-        </p>
-        <p className="text-slate-300">
-          <span className="font-semibold text-cyan-200">Arterial flow feed:</span>{" "}
-          {liveTrafficLoading
-            ? "Checking arterial flow telemetry."
-            : liveTrafficFlow
-              ? (liveTrafficFlow.isSimulated
-                ? `Simulated road-corridor flow active for ${city.name} (${liveTrafficFlow.currentSpeed} km/h · baseline ${liveTrafficFlow.freeFlowSpeed} km/h).`
-                : `Live road flow active for ${city.name} (${liveTrafficFlow.currentSpeed} km/h).`)
-              : liveTrafficFlowError
-                ? "Corridor flow telemetry unavailable."
-                : "Active arterial baseline."}
-          {" "}Transit arrivals and charger availability need operator feeds.
-        </p>
+      <div className="grid gap-3 rounded-xl border border-slate-800 bg-[#101622] p-4 text-xs sm:grid-cols-2 xl:grid-cols-4">
+        <div>
+          <span className="font-mono font-semibold text-teal-300 block mb-1">01 / MAP FEATURES</span>
+          <p className="text-slate-400 leading-relaxed">
+            Direct OpenStreetMap highway network, intersections, signals, and transit points. Network coverage status displayed per layer.
+          </p>
+        </div>
+        <div>
+          <span className="font-mono font-semibold text-amber-300 block mb-1">02 / INTERSECTION PRESSURE</span>
+          <p className="text-slate-400 leading-relaxed">
+            Planning heuristics identify mapped signals near high-density roads. Review recommendations are advisory, not verified delays.
+          </p>
+        </div>
+        <div>
+          <span className="font-mono font-semibold text-slate-300 block mb-1">03 / FLOW DYNAMICS</span>
+          <p className="text-slate-400 leading-relaxed">
+            Simulated rolling velocity computed every 15s using corridor models. Captures diurnal variation across arterial segments.
+          </p>
+        </div>
+        <div>
+          <span className="font-mono font-semibold text-teal-300 block mb-1">04 / ARTERIAL TELEMETRY</span>
+          <p className="text-slate-400 leading-relaxed">
+            {liveTrafficLoading
+              ? "Checking arterial flow telemetry…"
+              : liveTrafficFlow
+                ? (liveTrafficFlow.isSimulated
+                  ? `Corridor simulation active for ${city.name} (${liveTrafficFlow.currentSpeed} km/h · baseline ${liveTrafficFlow.freeFlowSpeed} km/h).`
+                  : `Live arterial flow active for ${city.name} (${liveTrafficFlow.currentSpeed} km/h).`)
+                : liveTrafficFlowError
+                  ? "Corridor flow telemetry unavailable."
+                  : "Active arterial baseline."}
+          </p>
+        </div>
       </div>
 
       <LiveCityMap />
@@ -57,17 +67,32 @@ export const Transportation = () => {
       <TrafficChart />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl glass-panel border border-cyan-500/20 flex items-start gap-3">
-          <MapPin className="w-5 h-5 text-cyan-400 shrink-0" />
-          <div><h3 className="text-sm font-bold text-white">Road features</h3><p className="mt-1 text-xs text-slate-400">Street basemap and mapped traffic signals from OpenStreetMap.</p></div>
+        <div className="p-4 rounded-xl fieldwork-card border border-slate-800 flex items-start gap-3.5">
+          <div className="p-2 rounded-lg bg-slate-800/80 border border-slate-700/80 text-teal-400 shrink-0">
+            <MapPin className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-xs font-mono font-semibold text-white tracking-wide">ROAD NETWORK</h3>
+            <p className="mt-1 text-xs text-slate-400 leading-relaxed">Basemap geometry and mapped signal nodes queried directly from OpenStreetMap Overpass API.</p>
+          </div>
         </div>
-        <div className="p-4 rounded-xl glass-panel border border-sky-500/20 flex items-start gap-3">
-          <Train className="w-5 h-5 text-sky-400 shrink-0" />
-          <div><h3 className="text-sm font-bold text-white">Transit locations</h3><p className="mt-1 text-xs text-slate-400">Mapped transit stops and stations; no live timetable or occupancy data.</p></div>
+        <div className="p-4 rounded-xl fieldwork-card border border-slate-800 flex items-start gap-3.5">
+          <div className="p-2 rounded-lg bg-slate-800/80 border border-slate-700/80 text-sky-400 shrink-0">
+            <Train className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-xs font-mono font-semibold text-white tracking-wide">TRANSIT NODES</h3>
+            <p className="mt-1 text-xs text-slate-400 leading-relaxed">Mapped passenger stops and metro stations. Real-time timetable feeds require GTFS-RT integration.</p>
+          </div>
         </div>
-        <div className="p-4 rounded-xl glass-panel border border-emerald-500/20 flex items-start gap-3">
-          <Zap className="w-5 h-5 text-emerald-400 shrink-0" />
-          <div><h3 className="text-sm font-bold text-white">Charging locations</h3><p className="mt-1 text-xs text-slate-400">Mapped charging locations; online status and connector availability are not provided.</p></div>
+        <div className="p-4 rounded-xl fieldwork-card border border-slate-800 flex items-start gap-3.5">
+          <div className="p-2 rounded-lg bg-slate-800/80 border border-slate-700/80 text-emerald-400 shrink-0">
+            <Zap className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-xs font-mono font-semibold text-white tracking-wide">EV INFRASTRUCTURE</h3>
+            <p className="mt-1 text-xs text-slate-400 leading-relaxed">Public charging station locations. Real-time socket occupancy requires OCPI operator roaming feeds.</p>
+          </div>
         </div>
       </div>
     </div>

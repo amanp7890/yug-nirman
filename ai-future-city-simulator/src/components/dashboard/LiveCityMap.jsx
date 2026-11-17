@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Polyline, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { Activity, RefreshCw } from "lucide-react";
 import { useCity } from "../../context/CityContext";
 import { SAFAR_STATIONS } from "../../data/safarStations";
 import { TRAFFIC_DATA } from "../../data/trafficData";
+import { getUrbanProblems, subscribeUrbanProblems } from "../../utils/urbanProblemsStore";
 
 const classifyFeature = (tags = {}) => {
   if (tags.highway === "traffic_signals" || tags.crossing) return "traffic";
@@ -494,6 +496,17 @@ const COMMUNITY_SENSOR_ICON = L.divIcon({
   popupAnchor: [0, -18],
 });
 
+const createUrbanProblemIcon = (severity) => {
+  const color = severity === "HIGH" ? "#f43f5e" : severity === "MODERATE" ? "#f59e0b" : "#38bdf8";
+  return L.divIcon({
+    html: `<div style="width:30px;height:30px;border:2px solid ${color};border-radius:9999px;background:#090d16;box-shadow:0 0 16px ${color}aa;display:flex;align-items:center;justify-content:center;color:${color};font-size:14px;font-weight:900;cursor:pointer">⚠️</div>`,
+    className: "custom-leaflet-marker",
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -16],
+  });
+};
+
 export const LiveCityMap = () => {
   const {
     city,
@@ -516,6 +529,16 @@ export const LiveCityMap = () => {
     liveSensorsUpdatedAt,
     refreshLiveData,
   } = useCity();
+  const navigate = useNavigate();
+  const [urbanProblems, setUrbanProblems] = useState(() => getUrbanProblems(city.id));
+
+  useEffect(() => {
+    setUrbanProblems(getUrbanProblems(city.id));
+    return subscribeUrbanProblems(() => {
+      setUrbanProblems(getUrbanProblems(city.id));
+    });
+  }, [city.id]);
+
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [osmRetrySeconds, setOsmRetrySeconds] = useState(0);
   const [featureResult, setFeatureResult] = useState({ key: "", features: [], error: "", updatedAt: "" });
@@ -1234,6 +1257,70 @@ export const LiveCityMap = () => {
               </Popup>
             </Marker>
           ))}
+
+          {urbanProblems.filter((p) => p.status !== "resolved").map((prob) => {
+            const coords = Array.isArray(prob.coordinates) && prob.coordinates.length === 2
+              ? prob.coordinates
+              : city.coordinates;
+
+            const handleGoToActionPlanner = () => {
+              const mapping = {
+                traffic: "traffic-congestion",
+                air: "air-quality",
+                waste: "waste-management",
+                water: "water-stress",
+                road: "road-damage",
+                drainage: "drainage-bottlenecks",
+                energy: "energy-demand",
+                infrastructure: "infrastructure-gaps",
+              };
+              navigate("/action-planner", {
+                state: { problemId: mapping[prob.sector] || "air-quality" },
+              });
+            };
+
+            return (
+              <Marker
+                key={`urban-prob-${prob.id}`}
+                position={coords}
+                icon={createUrbanProblemIcon(prob.severity)}
+              >
+                <Popup>
+                  <div className="p-2 min-w-[220px]">
+                    <div className="flex items-center justify-between gap-2 pb-1 mb-1.5 border-b border-slate-700">
+                      <span className="font-mono text-[10px] uppercase font-bold text-teal-400">
+                        {prob.sector} Issue
+                      </span>
+                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                        prob.severity === "HIGH"
+                          ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                          : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                      }`}>
+                        {prob.severity}
+                      </span>
+                    </div>
+                    <div className="font-bold text-white text-xs mb-1">
+                      {prob.title}
+                    </div>
+                    <div className="text-[10px] text-slate-300 mb-2 leading-relaxed">
+                      {prob.evidence}
+                    </div>
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800 text-[10px] text-slate-300 mb-2 space-y-0.5">
+                      <div className="text-white font-semibold">{prob.location}</div>
+                      <div className="text-amber-400 font-mono">{prob.metricValue}</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleGoToActionPlanner}
+                      className="w-full py-1.5 px-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-bold text-[10px] transition text-center cursor-pointer shadow-sm"
+                    >
+                      Plan Action in Action Planner →
+                    </button>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
 
         </MapContainer>
 

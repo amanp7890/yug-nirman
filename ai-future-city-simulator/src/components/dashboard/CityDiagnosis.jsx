@@ -5,8 +5,8 @@ import { useCity } from "../../context/CityContext";
 import { getCityDiagnosis } from "../../utils/cityDiagnosis";
 
 const SEVERITY_STYLE = {
-  HIGH: "border-rose-400/30 bg-rose-400/10 text-rose-200",
-  MODERATE: "border-amber-400/30 bg-amber-400/10 text-amber-200",
+  HIGH: "border-rose-800/60 bg-rose-950/40 text-rose-300 font-mono",
+  MODERATE: "border-amber-800/60 bg-amber-950/40 text-amber-300 font-mono",
 };
 const PROBLEM_ICONS = {
   traffic: Activity,
@@ -17,52 +17,54 @@ const PROBLEM_ICONS = {
 };
 
 const EVIDENCE_STYLE = {
-  "LIVE FEED": "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  "LIVE MODEL": "border-sky-400/30 bg-sky-400/10 text-sky-200",
-  "ILLUSTRATIVE PROFILE": "border-slate-400/30 bg-slate-400/10 text-slate-200",
+  "LIVE FEED": "border-emerald-800/60 bg-emerald-950/40 text-emerald-300 font-mono",
+  "LIVE MODEL": "border-teal-800/60 bg-teal-950/40 text-teal-300 font-mono",
+  "ILLUSTRATIVE PROFILE": "border-slate-800 bg-slate-900 text-slate-400 font-mono",
 };
 
 function ProblemCard({ problem }) {
   const Icon = PROBLEM_ICONS[problem.id] || CircleHelp;
   return (
-    <article className="rounded-xl border border-slate-800 bg-slate-950/55 p-4">
+    <article className="rounded-xl border border-slate-800 fieldwork-card p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex items-start gap-2.5">
-          <span className="rounded-lg border border-slate-700 bg-slate-900 p-2 text-cyan-300">
+          <span className="rounded-lg border border-slate-700/80 bg-slate-800/80 p-2 text-teal-400">
             <Icon aria-hidden="true" className="h-4 w-4" />
           </span>
           <div>
-            <h3 className="text-sm font-bold text-white">{problem.title}</h3>
-            <p className="mt-1 text-[11px] text-slate-400">{problem.value}</p>
+            <h3 className="text-xs font-mono font-semibold text-white tracking-wide">{problem.title}</h3>
+            <p className="mt-0.5 text-xs font-mono text-slate-400">{problem.value}</p>
           </div>
         </div>
-        <span className={`rounded-full border px-2 py-1 text-[9px] font-black tracking-wide ${SEVERITY_STYLE[problem.severity]}`}>
-          {problem.severity} · SCREENING
-        </span>
-        <span className={`rounded-full border px-2 py-1 text-[9px] font-bold tracking-wide ${EVIDENCE_STYLE[problem.evidenceClass]}`}>
-          {problem.evidenceClass}
-        </span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className={`rounded border px-2 py-0.5 text-[10px] ${SEVERITY_STYLE[problem.severity]}`}>
+            {problem.severity} · SCREEN
+          </span>
+          <span className={`rounded border px-2 py-0.5 text-[10px] ${EVIDENCE_STYLE[problem.evidenceClass]}`}>
+            {problem.evidenceClass}
+          </span>
+        </div>
       </div>
-      <dl className="mt-3 grid gap-2 text-[11px] sm:grid-cols-2">
+      <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2">
         <div>
-          <dt className="font-bold text-slate-400">Location</dt>
-          <dd className="mt-0.5 text-slate-300">{problem.location}</dd>
+          <dt className="font-mono text-[10px] text-slate-500">LOCATION</dt>
+          <dd className="mt-0.5 text-slate-300 font-mono text-[11px]">{problem.location}</dd>
         </div>
         <div>
-          <dt className="font-bold text-slate-400">Affected systems</dt>
-          <dd className="mt-0.5 text-slate-300">{problem.systems}</dd>
+          <dt className="font-mono text-[10px] text-slate-500">AFFECTED SECTORS</dt>
+          <dd className="mt-0.5 text-slate-300 font-mono text-[11px]">{problem.systems}</dd>
         </div>
         <div>
-          <dt className="font-bold text-slate-400">Evidence · {problem.source}</dt>
+          <dt className="font-mono text-[10px] text-slate-500">EVIDENCE · {problem.source}</dt>
           <dd className="mt-0.5 leading-relaxed text-slate-300">{problem.evidence}</dd>
-          {problem.updatedAt && <dd className="mt-1 text-[10px] text-slate-500">Worker retrieval time: {problem.updatedAt}</dd>}
+          {problem.updatedAt && <dd className="mt-1 text-[10px] font-mono text-slate-500">Retrieval time: {problem.updatedAt}</dd>}
         </div>
         <div>
-          <dt className="font-bold text-slate-400">Cause / limitation</dt>
+          <dt className="font-mono text-[10px] text-slate-500">ATTRIBUTION / CONSTRAINTS</dt>
           <dd className="mt-0.5 leading-relaxed text-slate-300">{problem.cause}</dd>
         </div>
-        <div className="sm:col-span-2">
-          <dt className="font-bold text-cyan-200">Recommended next check</dt>
+        <div className="sm:col-span-2 border-t border-slate-800 pt-2">
+          <dt className="font-mono text-[10px] text-teal-400">RECOMMENDED ACTION</dt>
           <dd className="mt-0.5 leading-relaxed text-slate-300">{problem.nextCheck}</dd>
         </div>
       </dl>
@@ -79,21 +81,21 @@ export default function CityDiagnosis({ onExplain }) {
     <section id="city-diagnosis" aria-labelledby="city-diagnosis-title" className="scroll-mt-24 space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-rose-300">
-            <AlertTriangle aria-hidden="true" className="h-4 w-4" />
-            INDICATOR SCREENING · {city.name}
+          <div className="flex items-center gap-2 text-[10px] font-mono text-amber-300">
+            <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5" />
+            <span>INDICATOR AUDIT · {city.name.toUpperCase()}</span>
           </div>
-          <h2 id="city-diagnosis-title" className="mt-1 text-xl font-black text-white sm:text-2xl">
-            What needs a closer look?
+          <h2 id="city-diagnosis-title" className="mt-1 text-lg font-semibold text-white">
+            Screening Diagnostics
           </h2>
-          <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-400">
-            These indicators may point to issues, but they do not confirm an incident or its cause.
+          <p className="mt-0.5 max-w-3xl text-xs leading-relaxed text-slate-400">
+            Identifies systemic stress across transport, air dispersion, green canopy, and municipal grid proxies.
           </p>
         </div>
         <div className="flex items-center gap-3">
           {onExplain}
-          <Link to="/transportation" className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-300 hover:text-white">
-            Review mobility data <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+          <Link to="/transportation" className="inline-flex items-center gap-1 text-xs font-mono text-teal-300 hover:text-white">
+            Mobility telemetry <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
           </Link>
         </div>
       </div>

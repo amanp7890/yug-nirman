@@ -1562,14 +1562,14 @@ export const FuturePredictions = ({ reportOnly = false }) => {
             whyFeatureIds={["future-forecasts", "city-time-machine"]}
           />
 
-      <div className="flex flex-col gap-3 rounded-xl border border-cyan-500/25 bg-cyan-500/[0.06] p-4 text-xs text-slate-200 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-xl border border-slate-800 bg-[#121824] p-4 text-xs text-slate-200 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-semibold text-cyan-200">Provider: Open-Meteo weather and air-quality models (when reachable)</p>
+          <p className="font-semibold text-teal-300">Provider: Open-Meteo weather and air-quality models (when reachable)</p>
           <p className="mt-1 text-slate-400">
             Forecasts currently available: temperature, precipitation chance and amount, wind, weather conditions, and modelled air quality. Population, traffic, water, electricity-grid, and resilience predictions require verified city-specific feeds.
           </p>
           {liveWeather && (
-            <p className="mt-1 text-slate-300">
+            <p className="mt-1 font-mono text-[11px] text-slate-300">
               Current model conditions: {telemetry.weather.condition} · {telemetry.weather.temperature ?? "N/A"}°C · feels like {telemetry.weather.apparentTemperature ?? "N/A"}°C · humidity {telemetry.weather.relativeHumidity ?? "N/A"}% · wind {telemetry.weather.windSpeed ?? "N/A"} km/h · UV {telemetry.weather.uvIndex ?? "N/A"} · {telemetry.weather.observedAt || "time unavailable"}
             </p>
           )}
@@ -1579,7 +1579,7 @@ export const FuturePredictions = ({ reportOnly = false }) => {
         <button
           type="button"
           onClick={refreshLiveData}
-          className="min-h-9 shrink-0 rounded-md border border-cyan-400/30 px-3 text-xs font-semibold text-cyan-100 transition-colors hover:bg-cyan-400/10"
+          className="min-h-9 shrink-0 rounded-lg border border-slate-700 bg-slate-850 px-3 text-xs font-semibold text-slate-200 transition-colors hover:border-slate-500 hover:text-white"
         >
           Refresh live data
         </button>
@@ -1866,13 +1866,13 @@ export const FuturePredictions = ({ reportOnly = false }) => {
       )}
 
       {/* Horizon Slider Card */}
-      <div className="p-6 rounded-2xl glass-panel border border-cyan-500/20 bg-gradient-to-r from-slate-900/80 via-purple-950/20 to-slate-900/80">
+      <div className="fieldwork-card p-5 rounded-xl border border-slate-800 bg-[#121824] shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">
+            <span className="text-[10px] font-mono font-bold text-teal-400 uppercase tracking-wider">
               Forecast horizon
             </span>
-            <h2 className="text-2xl font-extrabold text-white font-mono mt-0.5">
+            <h2 className="text-xl font-extrabold text-white font-mono mt-0.5">
               Forecast window: {forecastHours} hours
             </h2>
             <p className="text-xs text-slate-400 mt-1">
@@ -1888,7 +1888,7 @@ export const FuturePredictions = ({ reportOnly = false }) => {
               step="6"
               value={forecastHours}
               onChange={(event) => setForecastHours(Number.parseInt(event.target.value, 10))}
-              className="w-full accent-cyan-400 cursor-pointer"
+              className="w-full accent-teal-500 cursor-pointer"
             />
             <div className="flex justify-between text-[11px] font-mono text-slate-500 mt-1">
               <span>6 hours</span>
@@ -1986,13 +1986,13 @@ export const FuturePredictions = ({ reportOnly = false }) => {
             return (
               <div
                 key={item.id}
-                className="relative rounded-2xl glass-panel p-4 transition-all duration-300 flex flex-col justify-between border border-cyan-500/20 bg-slate-900/70 hover:border-cyan-500/40 hover:bg-slate-900/90"
+                className="fieldwork-card relative rounded-xl p-4 transition-all duration-200 flex flex-col justify-between border border-slate-800 bg-[#121824] hover:border-slate-700 shadow-sm"
               >
                 <div>
                   {/* Top Category, Step & Risk Badge */}
                   <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-bold flex items-center justify-center">
+                      <span className="w-6 h-6 rounded-md bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-mono font-bold flex items-center justify-center">
                         0{item.step}
                       </span>
                       <span className="text-xs font-semibold text-slate-300">
@@ -2001,14 +2001,14 @@ export const FuturePredictions = ({ reportOnly = false }) => {
                     </div>
 
                     <span
-                      className={`px-2 py-0.5 text-[10px] font-mono font-bold rounded-lg uppercase ${
+                      className={`px-2 py-0.5 text-[10px] font-mono font-bold rounded uppercase ${
                         item.riskColor === "rose"
-                          ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                          ? "bg-rose-500/10 text-rose-300 border border-rose-500/30"
                           : item.riskColor === "amber"
-                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                          ? "bg-amber-500/10 text-amber-300 border border-amber-500/30"
                           : item.riskColor === "cyan"
-                          ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
-                          : "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                          ? "bg-teal-500/10 text-teal-300 border border-teal-500/30"
+                          : "bg-indigo-500/10 text-indigo-300 border border-indigo-500/30"
                       }`}
                     >
                       {item.riskLevel}
@@ -2017,7 +2017,7 @@ export const FuturePredictions = ({ reportOnly = false }) => {
 
                   {/* Title & Icon */}
                   <div className="mt-3.5 flex items-start gap-3">
-                    <div className="p-2 rounded-xl bg-slate-800/80 border border-slate-700 text-cyan-400 shrink-0 mt-0.5">
+                    <div className="p-2 rounded-lg bg-slate-850 border border-slate-700 text-teal-400 shrink-0 mt-0.5">
                       <Icon className="w-4 h-4" />
                     </div>
                     <div>
@@ -2025,18 +2025,18 @@ export const FuturePredictions = ({ reportOnly = false }) => {
                         {item.title}
                       </h4>
                       <p className="text-[11px] text-slate-400 mt-1">
-                        Horizon Target: <span className="text-cyan-400 font-mono font-semibold">{item.horizon}</span>
+                        Horizon Target: <span className="text-teal-300 font-mono font-semibold">{item.horizon}</span>
                       </p>
                     </div>
                   </div>
 
                   {/* Selected-year outcome */}
-                  <div className="my-3 p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 flex items-center justify-between">
+                  <div className="my-3 p-3 rounded-lg bg-[#0e141f] border border-slate-800 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] font-mono text-slate-500 block uppercase">
                         {item.outlookLabel || `Outlook in ${forecastHours} hours`}
                       </span>
-                      <span className="text-base font-extrabold font-mono text-cyan-300">
+                      <span className="text-base font-extrabold font-mono text-teal-300">
                         {item.stat}
                       </span>
                     </div>
@@ -2045,8 +2045,8 @@ export const FuturePredictions = ({ reportOnly = false }) => {
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/20">
-                    <span className="text-[10px] font-bold uppercase tracking-wide text-cyan-300">Future result</span>
+                  <div className="p-3 rounded-lg bg-teal-950/20 border border-teal-500/20">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wide text-teal-400">Future result</span>
                     <p title={item.futureOutcome} className="mt-1 line-clamp-2 text-xs text-slate-200 leading-relaxed">{item.futureOutcome}</p>
                   </div>
 
@@ -2091,8 +2091,8 @@ export const FuturePredictions = ({ reportOnly = false }) => {
       </div>
 
       {/* Live hourly weather and air-quality forecasts */}
-      <div className="p-6 rounded-2xl glass-panel border border-cyan-500/20">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-cyan-500/15 gap-2">
+      <div className="fieldwork-card p-6 rounded-xl border border-slate-800 bg-[#121824] shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-slate-800 gap-2">
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-bold text-white">
@@ -2164,10 +2164,10 @@ export const FuturePredictions = ({ reportOnly = false }) => {
       </div>
 
       {/* Forecast notes and data requirements */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-5 rounded-2xl glass-panel border border-cyan-500/20">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="fieldwork-card p-5 rounded-xl border border-slate-800 bg-[#121824] shadow-sm">
           <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-cyan-400" />
+            <Cpu className="w-4 h-4 text-teal-400" />
             <span>How these outlooks are calculated</span>
           </h4>
           <p className="text-xs text-slate-300 leading-relaxed">
@@ -2175,22 +2175,22 @@ export const FuturePredictions = ({ reportOnly = false }) => {
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl glass-panel border border-purple-500/30">
+        <div className="fieldwork-card p-5 rounded-xl border border-slate-800 bg-[#121824] shadow-sm">
           <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-purple-400" />
+            <TrendingUp className="w-4 h-4 text-teal-400" />
             <span>What is needed for city-specific forecasts</span>
           </h4>
           <ul className="space-y-2 text-xs text-slate-300">
             <li className="flex items-start gap-2">
-              <span className="text-cyan-400 font-bold">•</span>
+              <span className="text-teal-400 font-bold">•</span>
               <span>Historical population, traffic, energy, water, and air-quality measurements for the selected city.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-cyan-400 font-bold">•</span>
+              <span className="text-teal-400 font-bold">•</span>
               <span>Verified municipal or research datasets with dates, units, and documented sources.</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-cyan-400 font-bold">•</span>
+              <span className="text-teal-400 font-bold">•</span>
               <span>Model validation against held-out observations before treating outputs as reliable predictions.</span>
             </li>
           </ul>

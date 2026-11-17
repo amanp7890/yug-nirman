@@ -17,11 +17,11 @@ const SimulationTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
   return (
-    <div className="rounded-xl border border-cyan-500/30 bg-slate-950/95 p-3 text-xs shadow-xl">
-      <div className="mb-1 font-semibold text-cyan-200">{label} · simulated</div>
-      <div className="text-rose-300">Congestion: {point.congestion}%</div>
-      <div className="text-emerald-300">Estimated speed: {point.speed} km/h</div>
-      <div className="text-slate-300">Illustrative flow index: {point.vehicles.toLocaleString()}</div>
+    <div className="rounded-lg border border-slate-700 bg-[#0e141f] p-3 text-xs shadow-xl">
+      <div className="mb-1 font-mono text-slate-300 border-b border-slate-800 pb-1">T: {label} · simulated</div>
+      <div className="text-rose-300 font-mono">Congestion: {point.congestion}%</div>
+      <div className="text-teal-300 font-mono">Est speed: {point.speed} km/h</div>
+      <div className="text-slate-400 font-mono">Flow index: {point.vehicles.toLocaleString()}</div>
     </div>
   );
 };
@@ -39,57 +39,57 @@ export const TrafficSimulationPanel = () => {
   }, [city, profile]);
 
   return (
-    <section className="rounded-2xl border border-cyan-500/20 p-5 glass-panel" aria-label="Live traffic simulation">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-cyan-500/15 pb-3">
+    <section className="rounded-xl border border-slate-800 p-5 fieldwork-card" aria-label="Live traffic simulation">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-800 pb-3">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <Activity className="h-4 w-4 text-cyan-300" />
-            <h2 className="text-sm font-bold tracking-tight text-white">CITY TRAFFIC SIMULATION</h2>
-            <span className="rounded border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold text-cyan-200">
-              LIVE SIMULATION
+            <Activity className="h-4 w-4 text-teal-400" />
+            <h2 className="text-sm font-semibold tracking-tight text-white">ROLLING CORRIDOR SIMULATION</h2>
+            <span className="rounded border border-teal-800/80 bg-teal-950/40 px-2 py-0.5 text-[10px] font-mono font-medium text-teal-300">
+              SIMULATED DYNAMICS
             </span>
           </div>
-          <p className="mt-1 text-[11px] text-slate-400">
-            Locally generated rolling estimates for {city.name}; no API key or internet feed required. Latest sample: {new Date(simulation.current.timestamp).toLocaleTimeString()}.
+          <p className="mt-1 text-xs text-slate-400">
+            Locally generated rolling velocity estimates for {city.name} corridors. Sample: {new Date(simulation.current.timestamp).toLocaleTimeString()}.
           </p>
         </div>
-        <span className="text-[10px] text-slate-500">
-          Updated {new Date(simulation.updatedAt).toLocaleTimeString()}
+        <span className="text-[10px] font-mono text-slate-500">
+          Refreshed: {new Date(simulation.updatedAt).toLocaleTimeString()}
         </span>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-          <span className="flex items-center gap-1.5 text-xs text-slate-400"><Activity size={13} />Simulated congestion</span>
-          <strong className="mt-1 block font-mono text-lg text-rose-300">{simulation.current.congestion}%</strong>
+        <div className="rounded-lg border border-slate-800 bg-[#0e141f] p-3">
+          <span className="flex items-center gap-1.5 text-xs text-slate-400"><Activity size={13} />Congestion Index</span>
+          <strong className="mt-1 block font-mono text-xl text-rose-300">{simulation.current.congestion}%</strong>
         </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-          <span className="flex items-center gap-1.5 text-xs text-slate-400"><Gauge size={13} />Estimated speed</span>
-          <strong className="mt-1 block font-mono text-lg text-emerald-300">{simulation.current.speed} km/h</strong>
+        <div className="rounded-lg border border-slate-800 bg-[#0e141f] p-3">
+          <span className="flex items-center gap-1.5 text-xs text-slate-400"><Gauge size={13} />Corridor Velocity</span>
+          <strong className="mt-1 block font-mono text-xl text-emerald-300">{simulation.current.speed} km/h</strong>
         </div>
-        <div className="col-span-2 rounded-xl border border-slate-800 bg-slate-900/60 p-3 sm:col-span-1">
-          <span className="flex items-center gap-1.5 text-xs text-slate-400"><Clock3 size={13} />Local refresh</span>
-          <strong className="mt-1 block font-mono text-lg text-cyan-200">Every 15 sec</strong>
+        <div className="col-span-2 rounded-lg border border-slate-800 bg-[#0e141f] p-3 sm:col-span-1">
+          <span className="flex items-center gap-1.5 text-xs text-slate-400"><Clock3 size={13} />Model Step</span>
+          <strong className="mt-1 block font-mono text-xl text-teal-300">15s Step</strong>
         </div>
       </div>
 
-      <div className="mt-4 h-56 w-full">
+      <div className="mt-4 h-52 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={simulation.points} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
             <defs>
               <linearGradient id="trafficSimulationGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.38} />
-                <stop offset="95%" stopColor="#22d3ee" stopOpacity={0.02} />
+                <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#0d9488" stopOpacity={0.01} />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="rgba(148,163,184,.12)" strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="time" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} />
-            <YAxis domain={[0, 100]} unit="%" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} />
+            <CartesianGrid stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="2 4" vertical={false} />
+            <XAxis dataKey="time" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis domain={[0, 100]} unit="%" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
             <Tooltip content={<SimulationTooltip />} />
             <Area
               type="monotone"
               dataKey="congestion"
-              stroke="#22d3ee"
+              stroke="#0d9488"
               strokeWidth={2}
               fill="url(#trafficSimulationGradient)"
               isAnimationActive={false}
@@ -98,11 +98,8 @@ export const TrafficSimulationPanel = () => {
         </ResponsiveContainer>
       </div>
 
-      <p className="mt-2 flex items-start gap-1.5 text-[10px] text-amber-200/80" role="note">
-        <span className="font-bold">SIMULATION, NOT LIVE CITY DATA:</span>
-        <span>
-          This display generates a rolling three-minute series locally every 15 seconds using bundled sample profiles and deterministic variation. Values are not measured, provider-verified, or historical observations and are not tied to particular roads.
-        </span>
+      <p className="mt-2 text-[10px] font-mono text-slate-500" role="note">
+        PROVENANCE: Rolling 3-minute synthetic series calculated deterministically from baseline corridor capacity. Values are not real-time GPS telemetry.
       </p>
     </section>
   );

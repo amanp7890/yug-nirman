@@ -43,15 +43,15 @@ import {
 const UNAVAILABLE = "Data unavailable — risk cannot be reliably assessed.";
 
 const RISK_SCORE_CLASSES = {
-  LOW: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  MODERATE: "border-yellow-400/30 bg-yellow-400/10 text-yellow-200",
-  HIGH: "border-orange-400/30 bg-orange-400/10 text-orange-200",
-  "VERY HIGH": "border-rose-400/30 bg-rose-400/10 text-rose-200",
-  CRITICAL: "border-red-500/40 bg-red-500/15 text-red-200",
-  "CONTEXT ONLY": "border-cyan-400/30 bg-cyan-400/10 text-cyan-100",
-  "PROXY AVAILABLE": "border-violet-400/30 bg-violet-400/10 text-violet-100",
-  "MULTIPLE SIGNALS": "border-orange-400/30 bg-orange-400/10 text-orange-100",
-  UNAVAILABLE: "border-slate-600 bg-slate-800 text-slate-300",
+  LOW: "border-emerald-800/60 bg-emerald-950/40 text-emerald-300 font-mono",
+  MODERATE: "border-yellow-800/60 bg-yellow-950/40 text-yellow-300 font-mono",
+  HIGH: "border-amber-800/60 bg-amber-950/40 text-amber-300 font-mono",
+  "VERY HIGH": "border-orange-800/60 bg-orange-950/40 text-orange-300 font-mono",
+  CRITICAL: "border-rose-800/60 bg-rose-950/40 text-rose-300 font-mono",
+  "CONTEXT ONLY": "border-slate-700 bg-slate-800/70 text-slate-300 font-mono",
+  "PROXY AVAILABLE": "border-teal-800/60 bg-teal-950/40 text-teal-300 font-mono",
+  "MULTIPLE SIGNALS": "border-amber-800/60 bg-amber-950/40 text-amber-300 font-mono",
+  UNAVAILABLE: "border-slate-800 bg-slate-900 text-slate-500 font-mono",
 };
 
 const SEVERITY_ORDER = ["LOW", "MODERATE", "HIGH", "VERY HIGH", "CRITICAL"];
@@ -139,24 +139,24 @@ const getLevel = (signals, keys) => {
 };
 
 const ClimateMetricCard = ({ metric, icon: Icon }) => (
-  <article className="rounded-2xl border border-slate-700/80 bg-slate-950/65 p-4">
+  <article className="rounded-xl border border-slate-800 bg-[#0e141f] p-3.5">
     <div className="flex items-center justify-between gap-2">
-      <h3 className="text-xs font-semibold text-slate-300">{metric.name}</h3>
-      {Icon && <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-cyan-300" />}
+      <h3 className="text-xs font-mono font-medium text-slate-400">{metric.name}</h3>
+      {Icon && <Icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-teal-400" />}
     </div>
-    <p className={`mt-2 break-words text-lg font-bold leading-snug ${metric.value === null ? "text-slate-400" : "text-white"}`}>
+    <p className={`mt-2 break-words text-base font-bold font-mono leading-snug ${metric.value === null ? "text-slate-500" : "text-white"}`}>
       {formatMetricValue(metric)}
     </p>
-    <div className="mt-3 space-y-1 border-t border-slate-800 pt-2 text-[10px] leading-relaxed text-slate-400">
-      <p><span className="text-slate-500">Source:</span> {metric.source}</p>
-      <p><span className="text-slate-500">Time:</span> {formatTimestamp(metric.timestamp)}</p>
-      <p><span className="text-slate-500">Status:</span> {metric.status}</p>
+    <div className="mt-3 space-y-0.5 border-t border-slate-800/80 pt-2 text-[10px] font-mono leading-relaxed text-slate-500">
+      <p><span className="text-slate-400">Src:</span> {metric.source}</p>
+      <p><span className="text-slate-400">Time:</span> {formatTimestamp(metric.timestamp)}</p>
+      <p><span className="text-slate-400">Stat:</span> {metric.status}</p>
     </div>
   </article>
 );
 
 const SeverityBadge = ({ level }) => (
-  <span className={`inline-flex w-fit items-center rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-wide ${RISK_SCORE_CLASSES[level] || RISK_SCORE_CLASSES.UNAVAILABLE}`}>
+  <span className={`inline-flex w-fit items-center rounded border px-2 py-0.5 text-[10px] font-mono tracking-wide ${RISK_SCORE_CLASSES[level] || RISK_SCORE_CLASSES.UNAVAILABLE}`}>
     {level}
   </span>
 );
@@ -164,35 +164,29 @@ const SeverityBadge = ({ level }) => (
 const RiskCard = ({ risk, isSelected, onSelect }) => (
   <motion.button
     type="button"
-    whileHover={{ y: -2 }}
+    whileHover={{ y: -1 }}
     whileTap={{ scale: 0.99 }}
     onClick={onSelect}
     aria-pressed={isSelected}
-    className={`w-full rounded-2xl border p-4 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 ${
-      isSelected ? "border-cyan-300/50 bg-cyan-950/30" : "border-slate-700/80 bg-slate-950/65 hover:border-slate-500"
+    className={`w-full rounded-xl border p-4 text-left transition-colors cursor-pointer ${
+      isSelected ? "border-teal-500/60 bg-[#121a28] shadow-sm" : "border-slate-800 bg-[#0e141f] hover:border-slate-700"
     }`}
   >
     <span className="flex flex-wrap items-center justify-between gap-2">
-      <span className="text-sm font-bold text-white">{risk.name}</span>
+      <span className="text-xs font-mono font-semibold text-white tracking-wide">{risk.name}</span>
       <SeverityBadge level={risk.level} />
     </span>
-    <span className="mt-2 block text-xs text-slate-300">{risk.location}</span>
-    <span className="mt-2 block text-[11px] leading-relaxed text-slate-400">
-      <strong className="text-slate-300">Evidence:</strong> {risk.evidence}
+    <span className="mt-1.5 block text-xs font-mono text-slate-400">{risk.location}</span>
+    <span className="mt-2 block text-xs leading-relaxed text-slate-300">
+      <strong className="text-slate-200">Evidence:</strong> {risk.evidence}
     </span>
-    <span className="mt-2 block text-[11px] leading-relaxed text-slate-400">
-      <strong className="text-slate-300">Expected:</strong> {risk.expectedTime}
-    </span>
-    <span className="mt-2 block text-[11px] leading-relaxed text-slate-400">
+    <span className="mt-1.5 block text-xs leading-relaxed text-slate-400">
       <strong className="text-slate-300">Forecast:</strong> {risk.forecast}
     </span>
-    <span className="mt-2 block text-[11px] leading-relaxed text-slate-400">
-      <strong className="text-slate-300">Potential impact:</strong> {risk.potentialImpact}
-    </span>
-    <span className="mt-2 block text-[11px] leading-relaxed text-slate-400">
+    <span className="mt-1.5 block text-xs leading-relaxed text-slate-400">
       <strong className="text-slate-300">Action:</strong> {risk.action}
     </span>
-    <span className="mt-2 block border-t border-slate-800 pt-2 text-[10px] leading-relaxed text-slate-500">
+    <span className="mt-2.5 block border-t border-slate-800/80 pt-2 text-[10px] font-mono leading-relaxed text-slate-500">
       {risk.status} · {risk.source} · {formatTimestamp(risk.timestamp)}
     </span>
   </motion.button>
@@ -708,54 +702,55 @@ export const ClimateRisks = () => {
         whyFeatureIds={["flood-risk", "emergency-simulation"]}
       />
 
-      <div role="note" className="rounded-2xl border border-cyan-500/25 bg-cyan-950/20 p-4 text-xs leading-relaxed text-slate-300">
-        <strong className="text-cyan-200">How to read this page:</strong> Weather and air values are estimates from public models for the selected city coordinates. Risk levels are rule-based screening indicators, not official warnings. US AQI risk bands are not applied to the European AQI scale. Neighbourhood exposure, flood gauges, soil moisture, and validated city-system impacts are not connected.
-        {liveDataLoading && <span className="ml-2 text-cyan-200">Loading the latest available public data…</span>}
-        {!liveDataLoading && liveWeatherError && <span className="ml-2 text-amber-200">{liveWeatherError}</span>}
-        {!liveDataLoading && liveAirQualityError && <span className="ml-2 text-amber-200">{liveAirQualityError}</span>}
+      <div role="note" className="rounded-xl border border-slate-800 bg-[#101622] p-3.5 text-xs leading-relaxed text-slate-300">
+        <strong className="text-teal-300 font-mono">SCREENING METHODOLOGY:</strong> Weather and air dispersion indicators are sourced from Open-Meteo city coordinate models. Risk classifications follow deterministic rule-based screening bands. Regional catchment gauges and municipal emergency telemetry are not connected.
+        {liveDataLoading && <span className="ml-2 text-teal-300 font-mono">Synchronizing model feeds…</span>}
+        {!liveDataLoading && liveWeatherError && <span className="ml-2 text-amber-300 font-mono">{liveWeatherError}</span>}
+        {!liveDataLoading && liveAirQualityError && <span className="ml-2 text-amber-300 font-mono">{liveAirQualityError}</span>}
       </div>
 
       <section className="grid gap-4 xl:grid-cols-[1.1fr_2fr]">
-        <article className="relative overflow-hidden rounded-2xl border border-cyan-400/25 bg-gradient-to-br from-cyan-950/50 via-slate-950/80 to-slate-950 p-5">
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" aria-hidden="true" />
-          <div className="relative flex items-start justify-between gap-3">
+        <article className="rounded-xl border border-slate-800 fieldwork-card p-5">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Climate screening score</p>
-              <p className="mt-3 text-5xl font-black tracking-tight text-white">
+              <p className="text-xs font-mono font-semibold text-slate-400">CLIMATE SCREENING INDEX</p>
+              <p className="mt-2 text-4xl font-bold font-mono tracking-tight text-white">
                 {currentScreeningScore === null ? "—" : currentScreeningScore}
-                <span className="ml-2 text-base font-medium text-slate-400">/ 90</span>
+                <span className="ml-2 text-sm font-normal text-slate-500">/ 90</span>
               </p>
               <div className="mt-3"><SeverityBadge level={screeningLevel(currentScreeningScore)} /></div>
             </div>
-            <Gauge aria-hidden="true" className="h-7 w-7 text-cyan-300" />
+            <div className="p-2 rounded-lg bg-slate-800/80 border border-slate-700/80 text-teal-400">
+              <Gauge aria-hidden="true" className="h-5 w-5" />
+            </div>
           </div>
-          <p className="relative mt-4 text-xs leading-relaxed text-slate-300">
+          <p className="mt-3 text-xs leading-relaxed text-slate-400">
             {currentScreeningScore === null
               ? UNAVAILABLE
-              : "Highest tier across available temperature, rainfall, wind-gust, and US AQI screens. This is not a probability or a full city risk score."}
+              : "Dominant severity tier across temperature, rainfall rate, wind gust velocity, and US AQI dispersion screening."}
           </p>
-          <div className="relative mt-4 grid grid-cols-2 gap-3 border-t border-slate-700/70 pt-4">
+          <div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-800 pt-3">
             <div>
-              <span className="block text-[10px] uppercase text-slate-500">Risk trend</span>
-              <span className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-white">
+              <span className="block text-[10px] font-mono text-slate-500">TRAJECTORY</span>
+              <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-mono font-semibold text-white">
                 {trend === "INCREASING"
-                  ? <ArrowUpRight className="h-4 w-4 text-orange-300" />
+                  ? <ArrowUpRight className="h-3.5 w-3.5 text-amber-400" />
                   : trend === "DECREASING"
-                    ? <ArrowDownRight className="h-4 w-4 text-emerald-300" />
-                    : <Activity className="h-4 w-4 text-cyan-300" />}
+                    ? <ArrowDownRight className="h-3.5 w-3.5 text-emerald-400" />
+                    : <Activity className="h-3.5 w-3.5 text-teal-400" />}
                 {trend}
               </span>
             </div>
             <div>
-              <span className="block text-[10px] uppercase text-slate-500">Forecast risk</span>
-              <span className="mt-1 block text-xs font-bold text-white">{screeningLevel(forecastScreeningScore)}</span>
+              <span className="block text-[10px] font-mono text-slate-500">24H FORECAST TIER</span>
+              <span className="mt-0.5 block text-xs font-mono font-semibold text-white">{screeningLevel(forecastScreeningScore)}</span>
             </div>
           </div>
-          <p className="relative mt-3 text-[10px] leading-relaxed text-slate-500">
-            Transparent tier score: LOW 10 · MODERATE 30 · HIGH 55 · VERY HIGH 75 · CRITICAL 90. Uses the highest assessable signal only.
+          <p className="mt-3 text-[10px] font-mono leading-relaxed text-slate-500">
+            Rule bands: LOW 10 · MOD 30 · HIGH 55 · VERY HIGH 75 · CRIT 90.
           </p>
-          <p className="relative mt-2 text-[10px] leading-relaxed text-slate-500">
-            Status: {currentScreeningScore === null ? "UNAVAILABLE" : "INFERRED"} · Sources: Open-Meteo current weather and US AQI models · Updated: {formatTimestamp(weatherTimestamp || airTimestamp)}
+          <p className="mt-1 text-[10px] font-mono leading-relaxed text-slate-500">
+            Status: {currentScreeningScore === null ? "UNAVAILABLE" : "INFERRED"} · Updated: {formatTimestamp(weatherTimestamp || airTimestamp)}
           </p>
         </article>
 
@@ -767,41 +762,38 @@ export const ClimateRisks = () => {
       </section>
 
       <section className="grid gap-4 xl:grid-cols-2">
-        <article className="rounded-2xl border border-slate-700/80 bg-slate-950/70 p-4">
+        <article className="rounded-xl border border-slate-800 fieldwork-card p-4">
           <div className="flex items-center gap-2">
-            <ShieldCheck aria-hidden="true" className="h-4 w-4 text-cyan-300" />
-            <h2 className="text-sm font-bold text-white">Urban climate resilience</h2>
+            <ShieldCheck aria-hidden="true" className="h-4 w-4 text-teal-400" />
+            <h2 className="text-xs font-mono font-semibold text-white">URBAN CLIMATE RESILIENCE PROXY</h2>
           </div>
-          <p className="mt-2 text-lg font-bold text-slate-200">
+          <p className="mt-2 text-lg font-bold font-mono text-slate-200">
             {resilienceIndicator?.value == null
               ? "UNAVAILABLE"
-              : `${Math.round(resilienceIndicator.value)} / 100 · ESTIMATED PROXY`}
+              : `${Math.round(resilienceIndicator.value)} / 100 · PROXY SCORE`}
           </p>
           <p className="mt-1 text-xs leading-relaxed text-slate-400">
             {resilienceIndicator?.value == null
-              ? "The shared City Health calculation has no available resilience inputs for this city."
-              : `${resilienceIndicator.source} This is the same resilience component used by the City Health score; it is a proxy, not a verified citywide measure.`}
+              ? "Resilience inputs unavailable for this city coordinate."
+              : `${resilienceIndicator.source}. Planning reference proxy, not a municipal structural audit.`}
           </p>
-          <p className="mt-2 text-[10px] text-slate-500">
-            Data status: {resilienceIndicator?.status || "UNAVAILABLE"} · Time: {formatTimestamp(resilienceIndicator?.timestamp)}
+          <p className="mt-2 text-[10px] font-mono text-slate-500">
+            Status: {resilienceIndicator?.status || "UNAVAILABLE"} · Time: {formatTimestamp(resilienceIndicator?.timestamp)}
           </p>
         </article>
-        <details className="rounded-2xl border border-slate-700/80 bg-slate-950/70 p-4">
-          <summary className="cursor-pointer text-sm font-bold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">
-            Risk screening thresholds and limits
+        <details className="rounded-xl border border-slate-800 fieldwork-card p-4">
+          <summary className="cursor-pointer text-xs font-mono font-semibold text-slate-300 focus-visible:outline-none">
+            THRESHOLD DEFINITIONS &amp; CUTOFFS
           </summary>
           <p className="mt-2 text-xs leading-relaxed text-slate-400">
-            Transparent rule bands used by this screen only. These are not official alert thresholds or locally calibrated hazard models.
+            Screening thresholds utilized by this engine. These are benchmark limits, not national meteorological warning alerts.
           </p>
-          <ul className="mt-3 grid gap-2 text-xs text-slate-300 sm:grid-cols-2">
-            <li>Heat (temperature or feels-like): 30 / 32 / 35 / 40 °C</li>
-            <li>Rainfall: 7.5 / 20 / 30 / 50 mm per hour</li>
+          <ul className="mt-3 grid gap-1.5 text-xs font-mono text-slate-300 sm:grid-cols-2">
+            <li>Thermal (temp/apparent): 30 / 32 / 35 / 40 °C</li>
+            <li>Precipitation: 7.5 / 20 / 30 / 50 mm/h</li>
             <li>Wind gust: 40 / 60 / 80 / 100 km/h</li>
             <li>US AQI: 51 / 101 / 151 / 201</li>
           </ul>
-          <p className="mt-3 text-[10px] leading-relaxed text-slate-500">
-            Cutoffs mark MODERATE / HIGH / VERY HIGH / CRITICAL respectively. Values below the first cutoff are LOW. Missing measurements stay UNAVAILABLE.
-          </p>
         </details>
       </section>
 

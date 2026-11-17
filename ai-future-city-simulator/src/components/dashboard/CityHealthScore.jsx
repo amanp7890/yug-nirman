@@ -87,10 +87,10 @@ const estimateInfrastructureScore = ({ energyScore, waterScore, mobilityScore })
 };
 
 const SOURCE_CLASSES = {
-  LIVE: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  DEMO: "border-slate-400/30 bg-slate-400/10 text-slate-200",
-  ESTIMATE: "border-cyan-400/30 bg-cyan-400/10 text-cyan-200",
-  "MIXED DEMO": "border-amber-400/30 bg-amber-400/10 text-amber-200",
+  LIVE: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 font-mono",
+  DEMO: "border-slate-700 bg-slate-800/50 text-slate-300 font-mono",
+  ESTIMATE: "border-teal-500/30 bg-teal-500/10 text-teal-300 font-mono",
+  "MIXED DEMO": "border-amber-500/30 bg-amber-500/10 text-amber-300 font-mono",
 };
 
 function DimensionRow({ label, score, source, detail, contextValue }) {
@@ -345,10 +345,10 @@ export const CityHealthScore = () => {
   const stroke = score == null ? "#64748b" : score >= 70 ? "#10b981" : score >= 40 ? "#f59e0b" : "#ef4444";
 
   return (
-    <section aria-labelledby="city-health-title" className="h-full rounded-2xl border border-cyan-500/20 bg-slate-950/50 p-5">
-      <div className="flex items-start justify-between gap-3 border-b border-cyan-500/15 pb-3">
+    <section aria-labelledby="city-health-title" className="fieldwork-card h-full rounded-2xl border border-slate-800 bg-[#121824] p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-2 text-cyan-400">
+          <div className="rounded-xl border border-teal-500/30 bg-teal-500/10 p-2 text-teal-400">
             <Activity aria-hidden="true" className="h-4 w-4" />
           </div>
           <div>
@@ -364,7 +364,7 @@ export const CityHealthScore = () => {
             type="button"
             onClick={refreshLiveData}
             disabled={liveDataLoading}
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 px-2 py-1 text-[9px] font-semibold text-slate-300 transition-colors hover:border-cyan-400/50 hover:text-cyan-200 disabled:cursor-wait disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-850 px-2.5 py-1 text-[9px] font-semibold text-slate-300 transition-colors hover:border-slate-500 hover:text-white disabled:cursor-wait disabled:opacity-50"
           >
             <RefreshCw aria-hidden="true" className={`h-3 w-3 ${liveDataLoading ? "animate-spin" : ""}`} />
             {liveDataLoading ? "Updating" : "Refresh live data"}
@@ -438,7 +438,7 @@ export const CityHealthScore = () => {
       )}
 
       <div className="mb-4 grid gap-4 xl:grid-cols-2">
-        <article className="min-w-0 rounded-2xl border border-cyan-400/15 bg-gradient-to-br from-slate-900/90 via-slate-950/80 to-cyan-950/20 p-4 shadow-lg shadow-cyan-950/10">
+        <article className="min-w-0 rounded-xl border border-slate-800 bg-[#0e141f] p-4 shadow-sm">
           <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
             <div>
               <h3 className="text-xs font-bold text-white">Difference from overall score</h3>
@@ -446,7 +446,7 @@ export const CityHealthScore = () => {
                 Indicator points above or below the {score == null ? "overall" : `${Math.round(score)}-point`} average
               </p>
             </div>
-            <span className="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-2 py-1 text-[9px] font-semibold text-cyan-200">
+            <span className="rounded-full border border-slate-700 bg-slate-800/60 px-2 py-0.5 text-[9px] font-mono font-semibold text-slate-300">
               {chartDimensions.length} compared
             </span>
           </div>
@@ -461,7 +461,7 @@ export const CityHealthScore = () => {
                 >
                   <CartesianGrid
                     horizontal={false}
-                    stroke="rgba(148,163,184,0.16)"
+                    stroke="rgba(148,163,184,0.12)"
                   />
                   <XAxis
                     type="number"
@@ -493,18 +493,18 @@ export const CityHealthScore = () => {
                       ];
                     }}
                     contentStyle={{
-                      background: "rgba(2, 6, 23, 0.96)",
-                      border: "1px solid rgba(34, 211, 238, 0.3)",
-                      borderRadius: 12,
+                      background: "#0e141f",
+                      border: "1px solid #334155",
+                      borderRadius: 8,
                       fontSize: 11,
                     }}
                     cursor={{ fill: "rgba(148,163,184,0.08)" }}
                   />
-                  <Bar dataKey="difference" name="Difference" radius={[0, 7, 7, 0]} maxBarSize={22}>
+                  <Bar dataKey="difference" name="Difference" radius={[0, 4, 4, 0]} maxBarSize={22}>
                     {chartDimensions.map((dimension) => (
                       <Cell
                         key={dimension.label}
-                        fill={dimension.difference >= 0 ? "#34d399" : "#fb7185"}
+                        fill={dimension.difference >= 0 ? "#10b981" : "#f43f5e"}
                       />
                     ))}
                   </Bar>
@@ -521,16 +521,16 @@ export const CityHealthScore = () => {
           </p>
         </article>
 
-        <article className="min-w-0 rounded-2xl border border-violet-400/15 bg-gradient-to-br from-slate-900/90 via-slate-950/80 to-violet-950/20 p-4 shadow-lg shadow-violet-950/10">
+        <article className="min-w-0 rounded-xl border border-slate-800 bg-[#0e141f] p-4 shadow-sm">
           <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
             <div>
               <h3 className="text-xs font-bold text-white">Indicator scorecard</h3>
               <p className="mt-1 text-[10px] text-slate-400">Compare the scored dimensions side by side</p>
             </div>
-            <div className="flex items-center gap-2 text-[9px] text-slate-400">
+            <div className="flex items-center gap-2 text-[9px] font-mono text-slate-400">
               <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-emerald-400" />Live</span>
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-violet-400" />Illustrative</span>
-              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-cyan-400" />Proxy estimate</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-indigo-400" />Illustrative</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-teal-400" />Proxy estimate</span>
             </div>
           </div>
           {chartDimensions.length ? (
@@ -544,7 +544,7 @@ export const CityHealthScore = () => {
                 >
                   <CartesianGrid
                     horizontal={false}
-                    stroke="rgba(148,163,184,0.16)"
+                    stroke="rgba(148,163,184,0.12)"
                   />
                   <XAxis
                     type="number"
@@ -567,23 +567,23 @@ export const CityHealthScore = () => {
                       "Score",
                     ]}
                     contentStyle={{
-                      background: "rgba(2, 6, 23, 0.96)",
-                      border: "1px solid rgba(139, 92, 246, 0.3)",
-                      borderRadius: 12,
+                      background: "#0e141f",
+                      border: "1px solid #334155",
+                      borderRadius: 8,
                       fontSize: 11,
                     }}
                     cursor={{ fill: "rgba(148,163,184,0.08)" }}
                   />
-                  <Bar dataKey="score" name="Score" radius={[0, 8, 8, 0]} maxBarSize={22}>
+                  <Bar dataKey="score" name="Score" radius={[0, 4, 4, 0]} maxBarSize={22}>
                     {chartDimensions.map((dimension) => (
                       <Cell
                         key={dimension.label}
                         fill={
                           dimension.category === "live"
-                            ? "#34d399"
+                            ? "#10b981"
                             : dimension.category === "estimate"
-                              ? "#22d3ee"
-                              : "#a78bfa"
+                              ? "#0d9488"
+                              : "#6366f1"
                         }
                       />
                     ))}
@@ -640,7 +640,7 @@ export const CityHealthScore = () => {
                 onClick={() => setDimensionFilter(filter)}
                 className={`rounded-full border px-2 py-1 text-[9px] font-semibold transition-colors ${
                   dimensionFilter === filter
-                    ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-200"
+                    ? "border-teal-500/40 bg-teal-500/10 text-teal-300"
                     : "border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200"
                 }`}
               >
@@ -655,8 +655,8 @@ export const CityHealthScore = () => {
         )}
       </div>
 
-      <details className="mt-4 rounded-xl border border-cyan-500/15 bg-slate-900/60 p-3">
-        <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-cyan-200">
+      <details className="mt-4 rounded-xl border border-slate-800 bg-[#0e141f] p-3.5">
+        <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-teal-400">
           <CircleHelp aria-hidden="true" className="h-3.5 w-3.5" />
           WHY THIS SCORE?
         </summary>

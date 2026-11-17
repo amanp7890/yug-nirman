@@ -15,6 +15,10 @@ import { useCity } from "../context/CityContext";
 import useCurrentPopulationEstimate from "../hooks/useCurrentPopulationEstimate";
 import FutureForecastPreview from "../components/dashboard/FutureForecastPreview";
 import QuickActions from "../components/dashboard/QuickActions";
+import LiveCityMap from "../components/dashboard/LiveCityMap";
+import PollutionChart from "../components/dashboard/PollutionChart";
+import { getActionPlanStats, subscribeActionPlan } from "../utils/actionPlanStore";
+import { getUrbanProblemsStats, subscribeUrbanProblems } from "../utils/urbanProblemsStore";
 
 const parseMetricValue = (value) => {
   if (value == null || (typeof value === "string" && value.trim() === "")) return null;
@@ -274,6 +278,26 @@ export const Dashboard = () => {
   const [inspectedMetric, setInspectedMetric] = useState(null);
   const [presentationMode, setPresentationMode] = useState(false);
   const [presentationStep, setPresentationStep] = useState(0);
+
+  // Live Reactive Delivery & Incident Statistics (Automations A, D, E, F)
+  const [actionStats, setActionStats] = useState(() => getActionPlanStats());
+  const [problemStats, setProblemStats] = useState(() => getUrbanProblemsStats(city.id));
+
+  useEffect(() => {
+    setActionStats(getActionPlanStats());
+    const unsub = subscribeActionPlan(() => {
+      setActionStats(getActionPlanStats());
+    });
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    setProblemStats(getUrbanProblemsStats(city.id));
+    const unsub = subscribeUrbanProblems(() => {
+      setProblemStats(getUrbanProblemsStats(city.id));
+    });
+    return unsub;
+  }, [city.id]);
   const [explainFeature, setExplainFeature] = useState(null);
   const [scenarioChoice, setScenarioChoice] = useState("transit-first");
 
@@ -629,702 +653,473 @@ export const Dashboard = () => {
       {/* ══════════════════════════════════════════════════════
           1. COMMAND CENTER HEADER WITH TIME HORIZON & CONTROLS
       ══════════════════════════════════════════════════════ */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="command-dashboard-hero relative min-w-0 rounded-3xl p-4 overflow-hidden sm:p-6"
-        style={{
-          background: displayMode === "day"
-            ? "linear-gradient(135deg, #ffffff 0%, #eaf5ff 55%, #e8fbf7 100%)"
-            : "linear-gradient(135deg, rgba(14,165,233,0.12) 0%, rgba(4,14,38,0.95) 50%, rgba(45,212,191,0.1) 100%)",
-          border: displayMode === "day" ? "1px solid rgba(14,116,144,0.25)" : "1px solid rgba(14,165,233,0.25)",
-          boxShadow: displayMode === "day"
-            ? "0 16px 40px rgba(15,23,42,0.08)"
-            : "0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(14,165,233,0.1)",
-        }}
-      >
-        <motion.div
-          aria-hidden="true"
-          className="command-dashboard-orbit absolute right-0 top-0 h-80 w-80 rounded-full pointer-events-none"
-          animate={{ scale: [0.96, 1.05, 0.96], opacity: [0.5, 0.85, 0.5] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ background: "radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
-        <div className="command-dashboard-grid absolute inset-0 pointer-events-none rounded-3xl" aria-hidden="true" />
-        <div className="absolute inset-0 scan-overlay pointer-events-none rounded-3xl" />
-
-        <div className="relative z-10 flex min-w-0 flex-col gap-5 2xl:flex-row 2xl:items-center 2xl:justify-between">
-          {/* Title block */}
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-3 mb-1">
-              <motion.div
-                whileHover={{ rotate: 8, scale: 1.06 }}
-                transition={{ type: "spring", stiffness: 360, damping: 16 }}
-                className="command-dashboard-mark flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
-                style={{ background: "#70e2d0", boxShadow: "0 0 25px rgba(112,226,208,0.24)" }}>
-                <BrandMark className="h-9 w-9" />
-              </motion.div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className={`min-w-0 text-2xl sm:text-3xl font-black tracking-tight ${displayMode === "day" ? "text-slate-900" : "text-white"}`} style={{ fontFamily: "'Outfit', sans-serif" }}>
-                    City Overview
-                  </h1>
-                  <FeatureWhy featureIds={["ai-command-center", "digital-city-twin"]} />
-                  <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full font-mono uppercase"
-                    style={{ background: "rgba(14,165,233,0.2)", color: "#38bdf8", border: "1px solid rgba(14,165,233,0.4)" }}>
-                    Live and example data
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  <span className="text-sky-300 font-bold">{city.name}</span>
-                  <span className="mx-2 text-slate-600">•</span>
-                  <span>{city.tagline}</span>
-                </p>
-              </div>
+      {/* ══════════════════════════════════════════════════════
+          1. RESTRAINED EDITORIAL HEADER WITH HORIZON CONTROLLER
+      ══════════════════════════════════════════════════════ */}
+      <section className="p-4 sm:p-5 rounded-xl border border-slate-800 bg-[#121824] shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-teal-400 font-semibold bg-teal-950/70 border border-teal-800/80 px-2 py-0.5 rounded">
+                Spatial Workspace
+              </span>
+              <span className="text-xs text-slate-500">•</span>
+              <span className="text-xs text-slate-300 font-medium">{city.name}, {city.country || city.state}</span>
+              {city.dataMode === "illustrative" && (
+                <span className="text-[9px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
+                  Illustrative Reference
+                </span>
+              )}
             </div>
-
-            {/* Live streaming status pills & speed controls */}
-            <div className="flex flex-wrap items-center gap-2.5 mt-3">
-              <div className="flex items-center gap-1.5 text-[11px] font-mono px-3 py-1 rounded-full"
-                style={{ background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", color: "#2dd4bf" }}>
-                <PulseIndicator color="#2dd4bf" />
-                <span>{livePackets.toLocaleString()} demo packets simulated</span>
-              </div>
-              
-              {/* Telemetry streaming speed selector */}
-              <div className="flex items-center gap-1 p-0.5 rounded-full bg-slate-900/80 border border-slate-700">
-                <button
-                  type="button"
-                  onClick={() => setStreamSpeed(0)}
-                  aria-pressed={streamSpeed === 0}
-                  title="Pause simulated stream"
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold flex items-center gap-1 ${
-                    streamSpeed === 0 ? "bg-rose-500 text-white" : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  <Pause className="w-2.5 h-2.5" />
-                  <span>Pause demo</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStreamSpeed(1)}
-                  aria-pressed={streamSpeed === 1}
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                    streamSpeed === 1 ? "bg-cyan-500 text-slate-950" : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  1x
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStreamSpeed(2)}
-                  aria-pressed={streamSpeed === 2}
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                    streamSpeed === 2 ? "bg-cyan-500 text-slate-950" : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  2x
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStreamSpeed(5)}
-                  aria-pressed={streamSpeed === 5}
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold flex items-center gap-0.5 ${
-                    streamSpeed === 5 ? "bg-amber-400 text-slate-950" : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  <FastForward className="w-2.5 h-2.5" />
-                  <span>5x</span>
-                </button>
-              </div>
-
-              <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono px-3 py-1 rounded-full"
-                style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#34d399" }}>
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>SAMPLE SCENARIO</span>
-              </div>
-            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
+              Understand your city.
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              Explore spatial infrastructure, live atmospheric readings, and scenario models across {city.name}.
+            </p>
           </div>
 
-          {/* Controls: Twin selector, refresh, clock */}
-          <div className="dashboard-command-controls flex w-full flex-wrap items-center gap-2 2xl:w-auto 2xl:max-w-[440px] 2xl:justify-end">
+          {/* Controls: Horizon Selector + Presentation */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-900 border border-slate-800">
+              <span className="text-[10px] font-mono text-slate-400 px-2 uppercase font-semibold">Horizon:</span>
+              {[2026, 2030, 2035, 2040, 2050].map((year) => (
+                <button
+                  key={year}
+                  type="button"
+                  onClick={() => setHorizonYear(year)}
+                  aria-pressed={horizonYear === year}
+                  className={`px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors ${
+                    horizonYear === year
+                      ? "bg-teal-500 text-slate-950 font-bold"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleRefresh}
+              aria-label="Refresh public data"
+              title="Refresh public data"
+              className="p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 transition-colors"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing || liveDataLoading ? "animate-spin text-teal-400" : ""}`} />
+            </button>
+
             <button
               type="button"
               onClick={() => {
                 setPresentationMode(true);
                 setPresentationStep(0);
               }}
-              className="dashboard-control-button inline-flex items-center gap-2 rounded-xl border border-cyan-400/35 bg-slate-950/80 px-3 py-2 text-xs font-bold text-cyan-200 hover:text-white transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-colors flex items-center gap-1.5"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              Presentation Mode
-            </button>
-
-            {/* City selector */}
-            <div             className="dashboard-control-button flex min-w-0 items-center gap-2 rounded-2xl p-1.5"
-              style={{ background: "rgba(4,12,38,0.9)", border: "1px solid rgba(14,165,233,0.3)" }}>
-              <div className="pl-2 flex items-center gap-1.5 text-xs font-semibold text-slate-300">
-                <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Twin:</span>
-              </div>
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="min-w-0 max-w-[min(52vw,230px)] truncate rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none cursor-pointer"
-                style={{
-                  background: "rgba(4,14,38,0.95)",
-                  border: "1px solid rgba(14,165,233,0.3)",
-                  color: "#38bdf8",
-                }}
-              >
-                {citiesList.map((c) => (
-                  <option key={c.id} value={c.id} style={{ background: "#030d1a" }}>
-                    {c.name} ({c.country || c.state})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Refresh button */}
-            <button
-              type="button"
-              onClick={() => setDisplayMode(displayMode === "night" ? "day" : "night")}
-              aria-label={`Switch to ${displayMode === "night" ? "day" : "night"} mode`}
-              aria-pressed={displayMode === "day"}
-              title={`Switch to ${displayMode === "night" ? "day" : "night"} mode`}
-              className="dashboard-control-button inline-flex items-center gap-2 px-3 py-2.5 rounded-xl transition-all cursor-pointer"
-              style={{
-                background: displayMode === "day" ? "rgba(14,165,233,0.1)" : "rgba(14,165,233,0.1)",
-                border: "1px solid rgba(14,165,233,0.25)",
-                color: displayMode === "day" ? "#0369a1" : "#38bdf8",
-              }}
-            >
-              {displayMode === "night" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              <span className="hidden sm:inline text-xs font-semibold">{displayMode === "night" ? "Day mode" : "Night mode"}</span>
-            </button>
-
-            {/* Refresh button */}
-            <button onClick={handleRefresh}
-              type="button"
-              aria-label={liveDataLoading ? "Refreshing public data" : "Refresh public data"}
-              title={liveDataLoading ? "Refreshing public data" : "Refresh public data"}
-              className="dashboard-control-button p-2.5 rounded-xl transition-all cursor-pointer"
-              style={{ background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.25)", color: "#38bdf8" }}>
-                <RefreshCw className={`w-4 h-4 ${refreshing || liveDataLoading ? "animate-spin" : ""}`} />
-            </button>
-
-            {/* Clock */}
-            <div className="dashboard-control-button hidden sm:flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs"
-              style={{ background: "rgba(4,12,38,0.9)", border: "1px solid rgba(14,165,233,0.2)" }}>
-              <div className="flex items-center gap-1.5 text-slate-400">
-                <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-                <span>{currentDate}</span>
-              </div>
-              <span className="text-slate-700">|</span>
-              <div className="flex items-center gap-1.5 font-mono font-bold text-teal-400">
-                <Clock className="w-3.5 h-3.5" />
-                <span>{currentTime}</span>
-              </div>
-            </div>
-
-            <div className="flex w-full justify-start md:justify-end">
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.16 }}
-                className="dashboard-population-card flex w-fit min-w-52 max-w-full items-center gap-3 rounded-2xl border border-cyan-400/25 bg-slate-950/80 px-4 py-3"
-              >
-                <span className="rounded-xl border border-cyan-400/25 bg-cyan-400/10 p-2 text-cyan-300">
-                  <Users aria-hidden="true" className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
-                    {horizonYear !== 2026
-                      ? `Projected population · Year ${horizonYear}`
-                      : currentPopulation.status === "loading"
-                        ? "Official population estimate"
-                        : populationEstimate
-                          ? (isOfficialPopulationEstimate ? "Latest official estimate" : "2026 static population estimate")
-                          : "Population data unavailable"}
-                  </p>
-                  <p className="mt-0.5 font-mono text-xl font-black leading-none text-white">
-                    {horizonYear !== 2026
-                      ? dynamicMetrics.population.display
-                      : currentPopulation.status === "loading"
-                        ? "Loading…"
-                        : populationEstimate
-                          ? formatPopulation(populationEstimate.population)
-                          : "Unavailable"}
-                  </p>
-                  {horizonYear !== 2026 ? (
-                    <span className="mt-1 block text-[9px] text-cyan-300">
-                      Projected from 2026 baseline for {city.name}
-                    </span>
-                  ) : populationEstimate ? (
-                    <p className="mt-1 max-w-52 text-[9px] leading-relaxed text-cyan-300">
-                      {isOfficialPopulationEstimate
-                        ? `U.S. Census · as of Jul 1, ${populationEstimate.estimateYear}`
-                        : `ESTIMATED · STATIC · as of Jul 1, ${populationEstimate.estimateYear}`}
-                    </p>
-                  ) : (
-                    <p className="mt-1 max-w-52 text-[9px] leading-relaxed text-slate-500">
-                      {currentPopulation.status === "loading"
-                        ? "Checking the connected official source…"
-                        : currentPopulation.error}
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════
-            TIME HORIZON SIMULATION SCRUBBER (INTERACTIVE TIME TRAVEL)
-        ══════════════════════════════════════════════════════ */}
-        <div className="mt-5 pt-4 border-t border-cyan-500/20 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Time-Horizon Simulation Scrubber:</span>
-            </span>
-            <span className="text-xs font-mono font-black px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
-              YEAR {horizonYear}
-            </span>
-          </div>
-
-          <div className="dashboard-horizon-options flex flex-wrap items-center gap-2 pb-1" role="group" aria-label="Select simulation year">
-            {[2026, 2030, 2035, 2040, 2050].map((yr) => (
-              <motion.button
-                type="button"
-                key={yr}
-                onClick={() => setHorizonYear(yr)}
-                aria-pressed={horizonYear === yr}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.96 }}
-                className={`dashboard-horizon-button px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
-                  horizonYear === yr
-                    ? "bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 shadow-md shadow-cyan-500/30 scale-105"
-                    : "bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white"
-                }`}
-              >
-                {yr === 2026 ? "2026 Baseline" : `${yr} Scenario`}
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.08 }}
-        className="dashboard-decision-story relative overflow-hidden rounded-3xl border border-cyan-400/25 p-4 sm:p-6"
-      >
-        <div aria-hidden="true" className="dashboard-decision-glow absolute -right-16 -top-24 h-72 w-72 rounded-full" />
-        <div className="relative z-10">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-2xl">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-fuchsia-300/25 bg-fuchsia-400/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-fuchsia-200">
-                  <Sparkles className="h-3 w-3" /> Interactive demo
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/20 bg-amber-300/5 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-amber-200/80">
-                  <Activity className="h-3 w-3" /> Simulated outcomes
-                </span>
-              </div>
-              <h2 className="mt-3 text-xl font-black tracking-tight text-white sm:text-2xl">
-                A better commute. Cleaner air. <span className="bg-gradient-to-r from-cyan-200 via-teal-200 to-emerald-300 bg-clip-text text-transparent">One city decision.</span>
-              </h2>
-              <p className="mt-1.5 max-w-xl text-xs leading-relaxed text-slate-300 sm:text-sm">
-                Explore a sample planning challenge, choose a policy mix, and see how the projected trade-offs change.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setPresentationMode(true);
-                setPresentationStep(5);
-              }}
-              className="dashboard-story-cta inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-black text-slate-950"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              Launch full demo
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+              <span>Presentation</span>
             </button>
           </div>
-
-          <div className="dashboard-story-steps mt-5 grid grid-cols-2 gap-2 md:grid-cols-4">
-            {[
-              { label: "Spot the issue", detail: "Congestion is rising", icon: AlertTriangle, tone: "rose" },
-              { label: "Choose a policy", detail: "Pick a planning mix", icon: FlaskConical, tone: "violet" },
-              { label: "Compare impact", detail: "Review sample outcomes", icon: GitCompare, tone: "cyan" },
-              { label: "Make a decision", detail: "Turn insight into action", icon: Bot, tone: "emerald" },
-            ].map((stage, index) => {
-              const StageIcon = stage.icon;
-              return (
-                <motion.div
-                  key={stage.label}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.08, duration: 0.3 }}
-                  className={`dashboard-story-stage dashboard-story-stage-${stage.tone} relative flex items-center gap-2.5 rounded-xl border p-2.5`}
-                >
-                  <span className="dashboard-story-stage-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
-                    <StageIcon className="h-4 w-4" />
-                  </span>
-                  <span className="flex min-w-0 flex-col">
-                    <span className="truncate text-[11px] font-bold text-slate-100">{stage.label}</span>
-                    <span className="truncate text-[9px] text-slate-400">{stage.detail}</span>
-                  </span>
-                  {index < 3 && <span aria-hidden="true" className="dashboard-story-connector hidden md:block" />}
-                </motion.div>
-              );
-            })}
-          </div>
-
-          <div className="mt-4 grid min-w-0 gap-3 xl:grid-cols-[1.05fr_1fr]">
-            <div className="dashboard-story-options rounded-2xl border p-3 sm:p-4">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <div>
-                  <div className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Choose your intervention</div>
-                  <div className="mt-1 text-xs font-bold text-white">Which plan should the city test?</div>
-                </div>
-                <span className="rounded-lg border border-cyan-300/20 bg-cyan-300/5 px-2 py-1 text-[9px] font-mono font-bold text-cyan-200">01 / 03</span>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
-                {decisionOptions.map((option, index) => {
-                  const OptionIcon = [Car, Trees, Activity][index];
-                  const isSelected = scenarioChoice === option.id;
-                  return (
-                    <motion.button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setScenarioChoice(option.id)}
-                      aria-pressed={isSelected}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`dashboard-story-option w-full rounded-xl border p-3 text-left ${isSelected ? "is-selected" : ""}`}
-                    >
-                      <div className="flex items-start gap-2.5">
-                        <span className="dashboard-story-option-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
-                          <OptionIcon className="h-4 w-4" />
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="flex items-center justify-between gap-1">
-                            <span className="truncate text-[11px] font-extrabold text-white">{option.label}</span>
-                            <span className="text-[9px] font-mono font-bold text-emerald-300">{option.after.traffic}%</span>
-                          </span>
-                          <span className="mt-1 block text-[10px] leading-relaxed text-slate-400">{option.summary}</span>
-                        </span>
-                      </div>
-                      {isSelected && (
-                        <motion.span
-                          layoutId="decision-choice-indicator"
-                          className="dashboard-story-option-line mt-2 block h-0.5 rounded-full"
-                        />
-                      )}
-                    </motion.button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="dashboard-story-results relative overflow-hidden rounded-2xl border p-3 sm:p-4">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div>
-                  <div className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-200/80">Projected demo impact</div>
-                  <div className="mt-1 text-xs font-bold text-white">Here’s what this plan could change</div>
-                </div>
-                <span className="rounded-full border border-amber-200/20 bg-amber-200/5 px-2 py-1 text-[9px] font-bold text-amber-100/80">Illustrative only</span>
-              </div>
-
-              <div className="mt-4 space-y-4">
-                {[
-                  { label: "Traffic delay", before: selectedDecision.before.traffic, after: selectedDecision.after.traffic, max: 100, suffix: "%", color: "cyan" },
-                  { label: "Air quality index", before: selectedDecision.before.aqi, after: selectedDecision.after.aqi, max: 200, suffix: " AQI", color: "violet" },
-                ].map((metric) => (
-                  <div key={metric.label}>
-                    <div className="mb-1.5 flex items-center justify-between text-[10px]">
-                      <span className="font-semibold text-slate-300">{metric.label}</span>
-                      <span className="font-mono text-slate-400">
-                        <span className="text-slate-300">{metric.before}{metric.suffix}</span>
-                        <span className="px-1.5 text-slate-600">→</span>
-                        <span className="font-bold text-emerald-300">{metric.after}{metric.suffix}</span>
-                      </span>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="dashboard-story-track h-1.5 overflow-hidden rounded-full">
-                        <motion.div
-                          key={`${scenarioChoice}-${metric.label}-before`}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${Math.min(100, (metric.before / metric.max) * 100)}%` }}
-                          transition={{ duration: 0.65, ease: "easeOut" }}
-                          className="h-full rounded-full bg-gradient-to-r from-slate-500 to-slate-400"
-                        />
-                      </div>
-                      <div className="dashboard-story-track h-1.5 overflow-hidden rounded-full">
-                        <motion.div
-                          key={`${scenarioChoice}-${metric.label}-after`}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${Math.min(100, (metric.after / metric.max) * 100)}%` }}
-                          transition={{ duration: 0.75, delay: 0.08, ease: "easeOut" }}
-                          className={`h-full rounded-full ${metric.color === "cyan" ? "bg-gradient-to-r from-cyan-400 to-teal-300" : "bg-gradient-to-r from-violet-400 to-fuchsia-300"}`}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <motion.div
-                key={scenarioChoice}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="dashboard-story-takeaway mt-4 flex items-center gap-3 rounded-xl border px-3 py-2.5"
-              >
-                <span className="dashboard-story-impact-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
-                  <TrendingDown className="h-4 w-4" />
-                </span>
-                <span className="text-[10px] leading-relaxed text-slate-200">
-                  <strong className="text-emerald-200">{selectedDecision.before.traffic - selectedDecision.after.traffic}% less traffic delay</strong>
-                  {" "}in this sample scenario, while AQI moves from {selectedDecision.before.aqi} to {selectedDecision.after.aqi}.
-                </span>
-              </motion.div>
-              <p className="mt-2 text-[9px] leading-relaxed text-slate-500">
-                Demo assumptions only—not a live forecast or a guaranteed policy outcome.
-              </p>
-            </div>
-          </div>
         </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.38, delay: 0.12 }}
-        className="dashboard-glass-panel flex flex-col gap-2 rounded-xl border border-sky-500/20 bg-slate-950/50 px-4 py-3 text-xs"
-        role="status"
-      >
-        {/* Live data status row */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-300">
-          <span className="font-bold uppercase tracking-wide text-sky-300 flex items-center gap-1.5">
-            {liveDataLoading
-              ? <span className="animate-pulse">⟳</span>
-              : currentModelAqi != null || liveWeather?.temperature_2m != null
-                ? <Wifi className="w-3 h-3 text-emerald-400" />
-                : <WifiOff className="w-3 h-3 text-slate-500" />}
-            Live weather and air quality
-          </span>
-          <span className={currentModelAqi != null ? "text-emerald-300 font-semibold" : "text-slate-400"}>
-            Air quality index: {currentModelAqi != null
-              ? `${Math.round(currentModelAqi)} ${modelAqiScale} · ${formatModelTime(liveAirQuality?.time)}`
-              : "unavailable"}
-          </span>
-          <span className={liveWeather?.temperature_2m != null ? "text-emerald-300 font-semibold" : "text-slate-400"}>
-            Temperature: {liveWeather?.temperature_2m != null && Number.isFinite(Number(liveWeather.temperature_2m))
-              ? `${Number(liveWeather.temperature_2m).toFixed(1)}°C · ${formatModelTime(liveWeather.time)}`
-              : "unavailable"}
-          </span>
-          {liveWeather?.wind_speed_10m != null && (
-            <span className="text-slate-300">
-              Wind: {Number(liveWeather.wind_speed_10m).toFixed(1)} km/h
-            </span>
-          )}
-          {liveWeather?.relative_humidity_2m != null && (
-            <span className="text-slate-300">
-              Humidity: {Number(liveWeather.relative_humidity_2m).toFixed(0)}%
-            </span>
-          )}
-          {liveWeather?.precipitation != null && (
-            <span className="text-blue-300">
-              Rainfall: {Number(liveWeather.precipitation).toFixed(1)} mm/h
-            </span>
-          )}
-        </div>
-        {/* Error / status message */}
-        {(liveDataLoading || liveWeatherError || liveAirQualityError) && (
-          <span className="text-amber-200 text-[11px]">
-            {liveDataLoading
-              ? "Updating weather and air quality…"
-              : [liveWeatherError, liveAirQualityError].filter(Boolean).join(" ")}
-          </span>
-        )}
-        {/* Secondary data sources */}
-        <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-slate-700/60 pt-2 text-[10px] text-slate-400">
-          <span>
-            Nearby road traffic: {liveTrafficFlow
-              ? `${liveTrafficFlow.currentSpeed} km/h (usual: ${liveTrafficFlow.freeFlowSpeed} km/h) · ${Math.round((liveTrafficFlow.confidence || 0.88) * 100)}% data quality`
-              : liveTrafficLoading
-                ? "checking"
-                : "Active baseline"}
-          </span>
-          <span>
-            Nearby air sensors: {liveSensorStations?.length > 0
-              ? `${liveSensorStations.length} nearby (${liveSensorStations[0]?.provider || "Active"})`
-              : liveFeedsLoading ? "loading" : "4 active stations"}
-          </span>
-          <span className="text-slate-500">Some energy, water, and traffic figures are estimates based on current weather.</span>
-        </div>
-      </motion.div>
+      </section>
 
       {/* ══════════════════════════════════════════════════════
-          2. INTERACTIVE EMERGENCY SCENARIO STRESS-TEST BAR
+          1.1 AUTOMATED MUNICIPAL DELIVERY & INCIDENT COMMAND BAR (AUTOMATIONS A, D, E, F)
       ══════════════════════════════════════════════════════ */}
-      <div 
-        className="dashboard-glass-panel dashboard-scenario-panel p-4 rounded-2xl relative overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, rgba(6,18,42,0.9) 0%, rgba(3,10,24,0.95) 100%)",
-          border: "1px solid rgba(14,165,233,0.22)",
-        }}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-          <div className="flex items-center gap-2">
-            <Siren className="w-4 h-4 text-rose-400 animate-pulse" />
-            <span className="text-xs font-bold text-white uppercase tracking-wider">
-              Try a Scenario
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* Active Delivery Interventions */}
+        <Link
+          to="/implementation-tracker"
+          className="p-3.5 rounded-xl border border-teal-500/30 bg-[#121824] hover:border-teal-500/60 transition group flex flex-col justify-between shadow-sm cursor-pointer"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono uppercase font-bold text-teal-400 tracking-wider">
+              Implementation Tracker
             </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">
-              Example only
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded font-bold">
+              {actionStats.averageProgress}% Done
             </span>
           </div>
-          {activeScenario && (
-            <button
-              type="button"
-              onClick={() => setActiveScenario(null)}
-              className="text-xs text-rose-400 hover:text-rose-300 font-bold underline flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+          <div className="my-2">
+            <div className="text-xl font-black font-mono text-white">
+              {actionStats.activeCount} Active <span className="text-xs font-normal text-slate-400">/ {actionStats.total} total</span>
+            </div>
+            <div className="text-[11px] text-slate-400 truncate">
+              ${(actionStats.totalCapex / 1_000_000).toFixed(1)}M municipal budget committed
+            </div>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+            <div style={{ width: `${actionStats.averageProgress}%` }} className="h-full bg-teal-400 rounded-full transition-all duration-500" />
+          </div>
+        </Link>
+
+        {/* Active Municipal Problems & Incidents */}
+        <Link
+          to="/problems"
+          className="p-3.5 rounded-xl border border-slate-800 bg-[#121824] hover:border-slate-700 transition group flex flex-col justify-between shadow-sm cursor-pointer"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono uppercase font-bold text-amber-400 tracking-wider">
+              Urban Incidents &amp; Issues
+            </span>
+            <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+              problemStats.highCount > 0 ? "bg-rose-500/20 text-rose-300 border border-rose-500/30 animate-pulse" : "bg-slate-800 text-slate-300"
+            }`}>
+              {problemStats.highCount} Critical
+            </span>
+          </div>
+          <div className="my-2">
+            <div className="text-xl font-black font-mono text-white">
+              {problemStats.total} Logged <span className="text-xs font-normal text-slate-400">({problemStats.resolvedCount} resolved)</span>
+            </div>
+            <div className="text-[11px] text-slate-400 truncate">
+              ~{(problemStats.totalImpactedResidents / 1000).toFixed(0)}k citizens in impact zone
+            </div>
+          </div>
+          <span className="text-[10px] text-teal-400 group-hover:underline flex items-center gap-1 font-semibold">
+            View evidence &amp; diagnostics →
+          </span>
+        </Link>
+
+        {/* Automated Alert / Critical Breach Detector (Automation F) */}
+        <div className={`p-3.5 rounded-xl border flex flex-col justify-between shadow-sm ${
+          problemStats.highCount > 0
+            ? "border-rose-500/40 bg-rose-500/5 text-rose-200"
+            : "border-slate-800 bg-[#121824] text-slate-300"
+        }`}>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono uppercase font-bold text-rose-400 tracking-wider flex items-center gap-1.5">
+              <span className={`w-2 h-2 rounded-full ${problemStats.highCount > 0 ? "bg-rose-500 animate-ping" : "bg-emerald-400"}`} />
+              Operational Sentinel
+            </span>
+            <span className="text-[9px] font-mono text-slate-500 font-bold">Autonomous</span>
+          </div>
+          <div className="my-2">
+            <div className="text-sm font-bold text-white">
+              {problemStats.highCount > 0 ? "Threshold Breach Active" : "Operational Norms Maintained"}
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+              {problemStats.highCount > 0
+                ? `${problemStats.highCount} priority incidents demand planning intervention.`
+                : "No unmitigated critical threshold deviations detected."}
+            </p>
+          </div>
+          <Link
+            to="/action-planner"
+            className="text-[10px] font-bold text-teal-400 hover:text-white flex items-center gap-1"
+          >
+            Launch Action Planner →
+          </Link>
+        </div>
+
+        {/* Quick Decision Operations Shortcut */}
+        <div className="p-3.5 rounded-xl border border-slate-800 bg-[#121824] flex flex-col justify-between shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono uppercase font-bold text-teal-400 tracking-wider">
+              Decision Operations
+            </span>
+            <span className="text-[10px] font-mono text-slate-500">MCDA Engine</span>
+          </div>
+          <div className="my-1.5 space-y-1.5">
+            <Link
+              to="/action-planner"
+              className="w-full flex items-center justify-between py-1.5 px-2.5 rounded bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs transition shadow-sm"
             >
-              <span>Clear scenario ↺</span>
-            </button>
-          )}
+              <span>+ Plan Intervention</span>
+              <span>→</span>
+            </Link>
+            <Link
+              to="/reports"
+              className="w-full flex items-center justify-between py-1.5 px-2.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs transition"
+            >
+              <span>Export Decision Brief</span>
+              <span>↗</span>
+            </Link>
+          </div>
+          <span className="text-[9px] text-slate-500 font-mono">Single source of truth active</span>
         </div>
+      </section>
 
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 2xl:grid-cols-6">
-          {[
-            { id: "monsoon", icon: CloudRain, label: "Heavy Rain", color: "#38bdf8", desc: "Traffic and water use rise" },
-            { id: "heatwave", icon: Flame, label: "Heatwave", color: "#f59e0b", desc: "Energy use rises" },
-            { id: "traffic", icon: Car, label: "Traffic Jam", color: "#f43f5e", desc: "Travel slows down" },
-            { id: "grid", icon: Zap, label: "Power Outage", color: "#a78bfa", desc: "Power demand is affected" },
-            { id: "clean", icon: Trees, label: "Cleaner Air Plan", color: "#10b981", desc: "Air quality improves" },
-            { id: null, icon: Activity, label: "No Extra Scenario", color: "#2dd4bf", desc: "Example starting point" },
-          ].map((sc) => {
-            const Icon = sc.icon;
-            const isSelected = activeScenario === sc.id;
-            return (
-              <button
-                type="button"
-                key={sc.label}
-                onClick={() => setActiveScenario(sc.id)}
-                aria-pressed={isSelected}
-                className={`dashboard-scenario-choice p-2.5 rounded-xl text-left transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-cyan-500/20 border-2 border-cyan-400 shadow-md shadow-cyan-500/20 scale-[1.02]"
-                    : "bg-slate-900/60 border border-slate-800 hover:border-slate-700"
-                }`}
-              >
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Icon className="w-3.5 h-3.5" style={{ color: sc.color }} />
-                  <span className="text-[11px] font-bold text-white truncate">{sc.label}</span>
-                </div>
-                <div className="text-[10px] text-slate-400 font-mono">{sc.desc}</div>
-              </button>
-            );
-          })}
-        </div>
-
-        {activeScenario && (
-          <div className="mt-3 p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-center justify-between text-xs text-rose-200 animate-in fade-in">
+      {/* ══════════════════════════════════════════════════════
+          2. MAIN SPATIAL WORKSPACE (MAP-FIRST CENTERPIECE)
+      ══════════════════════════════════════════════════════ */}
+      <section className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+        {/* Left Column: Prominent Cartographic Map Anchor */}
+        <div className="xl:col-span-8 flex flex-col gap-2">
+          <div className="p-3 rounded-t-xl bg-[#121824] border border-slate-800 border-b-0 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-rose-400 animate-bounce" />
-              <span>
-                <strong>Example scenario is on:</strong> The figures below show a {activeScenario.toUpperCase()} example. Real city services are not affected.
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="font-semibold text-slate-200">Interactive City Map</span>
+              <span className="text-slate-600">|</span>
+              <span className="font-mono text-[11px] text-slate-400">
+                {city.coordinates[0].toFixed(3)}°N, {city.coordinates[1].toFixed(3)}°E
               </span>
             </div>
-            <button
-              type="button"
-              onClick={() => setActiveScenario(null)}
-              className="px-2.5 py-1 rounded bg-rose-500 text-white text-[11px] font-bold cursor-pointer"
-            >
-              Clear
-            </button>
+            <div className="flex items-center gap-3 text-slate-400 text-[11px]">
+              {liveWeather?.temperature_2m != null && (
+                <span>
+                  Weather: <strong className="text-slate-200">{liveWeather.temperature_2m}°C</strong>
+                </span>
+              )}
+              <Link
+                to="/explore"
+                className="text-teal-400 hover:underline flex items-center gap-1 font-semibold"
+              >
+                Explore City Spatial Map →
+              </Link>
+            </div>
           </div>
-        )}
-      </div>
+
+          <div className="rounded-b-xl overflow-hidden border border-slate-800 bg-[#0e1420]">
+            <LiveCityMap />
+          </div>
+        </div>
+
+        {/* Right Column: Carefully Selected City Indicators (Asymmetric Composition) */}
+        <div className="xl:col-span-4 flex flex-col gap-4">
+          {/* Primary Hero Indicator: Air Quality Index */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => setInspectedMetric({ title: "Air Quality Index", metric: dynamicMetrics.aqi, color: "#f59e0b" })}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setInspectedMetric({ title: "Air Quality Index", metric: dynamicMetrics.aqi, color: "#f59e0b" })}
+            className="p-4 rounded-xl border border-slate-800 bg-[#121824] hover:border-slate-700 transition-colors cursor-pointer text-left shadow-sm"
+          >
+            <div className="flex items-start justify-between gap-2 pb-2 border-b border-slate-800/80">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold block">
+                  Primary Environmental Signal
+                </span>
+                <h3 className="text-sm font-bold text-slate-100 mt-0.5">Air Quality Index</h3>
+              </div>
+              <span className={`px-2 py-0.5 text-[10px] font-mono font-bold rounded ${
+                dynamicMetrics.aqi.value > 150
+                  ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                  : dynamicMetrics.aqi.value > 100
+                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                    : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+              }`}>
+                {dynamicMetrics.aqi.status || "OBSERVED"}
+              </span>
+            </div>
+
+            <div className="flex items-baseline justify-between mt-3">
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-black font-mono text-slate-100">
+                  {dynamicMetrics.aqi.display}
+                </span>
+                <span className="text-xs font-mono text-slate-400">
+                  {modelAqiScale || "AQI scale"}
+                </span>
+              </div>
+              <span className="text-xs font-mono text-slate-400">
+                {hasLiveModelAqi ? `Model: ${formatModelTime(liveAirQuality?.time)}` : "Baseline Profile"}
+              </span>
+            </div>
+
+            <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
+              {hasLiveModelAqi
+                ? "Open-Meteo numerical atmospheric model reading for this coordinate. Not a roadside physical sensor."
+                : "Bundled city reference profile. Click to inspect full methodology."}
+            </p>
+          </div>
+
+          {/* Secondary Indicators: Clean Structured Analytical Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Traffic Congestion / Speed */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setInspectedMetric({ title: "Traffic Delay", metric: dynamicMetrics.traffic, color: "#f43f5e" })}
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setInspectedMetric({ title: "Traffic Delay", metric: dynamicMetrics.traffic, color: "#f43f5e" })}
+              className="p-3 rounded-xl border border-slate-800 bg-[#121824] hover:border-slate-700 transition-colors cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                <span>Traffic Delay</span>
+                <Car className="w-3.5 h-3.5 text-rose-400" />
+              </div>
+              <div className="mt-1 font-mono text-lg font-bold text-slate-100">
+                {dynamicMetrics.traffic.display}
+              </div>
+              <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                {liveTrafficFlow ? `${liveTrafficFlow.currentSpeed} km/h flow` : "Baseline estimate"}
+              </div>
+            </div>
+
+            {/* Weather / Temperature */}
+            <div
+              className="p-3 rounded-xl border border-slate-800 bg-[#121824] text-left"
+            >
+              <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                <span>Temperature</span>
+                <Thermometer className="w-3.5 h-3.5 text-amber-400" />
+              </div>
+              <div className="mt-1 font-mono text-lg font-bold text-slate-100">
+                {liveWeather?.temperature_2m != null ? `${Number(liveWeather.temperature_2m).toFixed(1)}°C` : "—"}
+              </div>
+              <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                {liveWeather?.apparent_temperature != null ? `Feels like ${Number(liveWeather.apparent_temperature).toFixed(1)}°C` : "Open-Meteo feed"}
+              </div>
+            </div>
+
+            {/* Green Canopy */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setInspectedMetric({ title: "Green Cover", metric: dynamicMetrics.greenCover, color: "#10b981" })}
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setInspectedMetric({ title: "Green Cover", metric: dynamicMetrics.greenCover, color: "#10b981" })}
+              className="p-3 rounded-xl border border-slate-800 bg-[#121824] hover:border-slate-700 transition-colors cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                <span>Green Canopy</span>
+                <Trees className="w-3.5 h-3.5 text-emerald-400" />
+              </div>
+              <div className="mt-1 font-mono text-lg font-bold text-slate-100">
+                {dynamicMetrics.greenCover.display}
+              </div>
+              <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                Urban tree cover
+              </div>
+            </div>
+
+            {/* Population Baseline */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setInspectedMetric({ title: "Population", metric: dynamicMetrics.population, color: "#0ea5e9" })}
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setInspectedMetric({ title: "Population", metric: dynamicMetrics.population, color: "#0ea5e9" })}
+              className="p-3 rounded-xl border border-slate-800 bg-[#121824] hover:border-slate-700 transition-colors cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                <span>Population</span>
+                <Users className="w-3.5 h-3.5 text-sky-400" />
+              </div>
+              <div className="mt-1 font-mono text-lg font-bold text-slate-100">
+                {dynamicMetrics.population.display}
+              </div>
+              <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                {isOfficialPopulationEstimate ? "U.S. Census baseline" : "2026 planning baseline"}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Guidance Box */}
+          <div className="p-3.5 rounded-xl border border-slate-800 bg-[#101622] text-xs">
+            <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-slate-800 text-slate-300 font-semibold">
+              <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+              <span>City Health Score: {city.healthScore?.overall || 76}/100</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Synthesized from air quality, mapped transport accessibility, and resource resilience. Click any indicator for technical provenance.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* ══════════════════════════════════════════════════════
-          2b. QUICK CITY GUIDE: 3 SIMPLE QUESTIONS
+          3. ANALYTICAL SECTION: ATMOSPHERIC & POLICY SCENARIOS
       ══════════════════════════════════════════════════════ */}
-      <section aria-labelledby="city-guide-heading" className="dashboard-glass-panel rounded-2xl border border-teal-500/25 bg-slate-900/90 p-5 shadow-xl">
-        <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-800">
-          <Sparkles className="w-4 h-4 text-teal-400" />
-          <h2 id="city-guide-heading" className="text-sm font-bold tracking-wide text-white uppercase">
-            Quick City Guide for {city.name}
-          </h2>
+      <section className="grid grid-cols-1 xl:grid-cols-12 gap-5 mt-2">
+        {/* Left Column: Atmospheric Profile Chart */}
+        <div className="xl:col-span-7">
+          <PollutionChart />
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Question 1: What is happening? */}
-          <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 flex flex-col justify-between">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-teal-400">1. What is happening?</span>
-              <h3 className="text-sm font-bold text-white mt-1">Current City Conditions</h3>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                {liveWeather?.temperature_2m != null 
-                  ? `Weather is ${Number(liveWeather.temperature_2m).toFixed(1)}°C with ${Number(liveWeather.relative_humidity_2m || 0).toFixed(0)}% humidity.` 
-                  : "Fetching current weather."}
-                {" "}
-                {currentModelAqi != null 
-                  ? `Air Quality is ${Math.round(currentModelAqi)} (${modelAqiScale}).` 
-                  : `AQI baseline is ${dynamicMetrics.aqi.display}.`}
-                {" "}
-                {liveTrafficFlow 
-                  ? `Road speed near reference point is ${liveTrafficFlow.currentSpeed} km/h.` 
-                  : `Traffic delay is around ${dynamicMetrics.traffic.display}.`}
-              </p>
+
+        {/* Right Column: Policy Scenario Workbench */}
+        <div className="xl:col-span-5 p-5 rounded-xl border border-slate-800 bg-[#121824] flex flex-col justify-between shadow-sm">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-teal-400 font-semibold block">
+                  Planning Workbench
+                </span>
+                <h3 className="text-sm font-bold text-slate-100">Policy Scenario Impact</h3>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                Simulated
+              </span>
             </div>
-            <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Green Cover: {dynamicMetrics.greenCover.display}</span>
-              <span className="text-teal-400 font-semibold">Health Score: {city.healthScore?.overall || 76}/100</span>
+
+            <p className="text-xs text-slate-400 mb-3">
+              Select a candidate intervention to test estimated trade-offs on traffic delay and air quality:
+            </p>
+
+            {/* 3 Selectable Policy Options */}
+            <div className="space-y-2">
+              {decisionOptions.map((option) => {
+                const isSelected = scenarioChoice === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => setScenarioChoice(option.id)}
+                    className={`w-full p-3 rounded-lg border text-left transition-colors cursor-pointer ${
+                      isSelected
+                        ? "bg-slate-800 border-teal-500/50 text-slate-100"
+                        : "bg-[#0e1420] border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span>{option.label}</span>
+                      <span className="font-mono text-emerald-400">{option.after.traffic}% delay</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                      {option.summary}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Before vs After Summary */}
+            <div className="mt-4 p-3.5 rounded-lg bg-[#0e1420] border border-slate-800 space-y-3">
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-slate-400">Traffic Delay:</span>
+                  <span className="font-mono font-semibold text-slate-200">
+                    {selectedDecision.before.traffic}% → <strong className="text-emerald-400">{selectedDecision.after.traffic}%</strong>
+                  </span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden flex">
+                  <div style={{ width: `${selectedDecision.after.traffic}%` }} className="bg-emerald-500 h-full rounded-full" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-slate-400">AQI Impact:</span>
+                  <span className="font-mono font-semibold text-slate-200">
+                    {selectedDecision.before.aqi} → <strong className="text-teal-400">{selectedDecision.after.aqi}</strong>
+                  </span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden flex">
+                  <div style={{ width: `${(selectedDecision.after.aqi / 200) * 100}%` }} className="bg-teal-500 h-full rounded-full" />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Question 2: Where can I explore? */}
-          <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 flex flex-col justify-between">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400">2. Where can I explore?</span>
-              <h3 className="text-sm font-bold text-white mt-1">Interactive Maps & Feeds</h3>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Explore streets, public sensors, and detailed service monitors:
-              </p>
-            </div>
-            <div className="mt-3 pt-2 border-t border-slate-800 flex flex-wrap gap-2">
-              <Link to="/digital-twin" className="px-2.5 py-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-xs font-semibold text-sky-200 transition-colors">
-                City Map →
+          <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between gap-3">
+            <Link
+              to="/action-planner"
+              className="text-xs font-semibold text-teal-400 hover:underline flex items-center gap-1"
+            >
+              Action Planner →
+            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/scenario-planner"
+                className="text-xs font-semibold text-slate-300 hover:text-white"
+              >
+                Scenario Planner
               </Link>
-              <Link to="/environment" className="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-xs font-semibold text-emerald-200 transition-colors">
-                Air & Weather →
-              </Link>
-              <Link to="/transportation" className="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-xs font-semibold text-amber-200 transition-colors">
-                Traffic →
-              </Link>
-            </div>
-          </div>
-
-          {/* Question 3: What can I do next? */}
-          <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 flex flex-col justify-between">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">3. What can I do next?</span>
-              <h3 className="text-sm font-bold text-white mt-1">Simulations & Reports</h3>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Test urban policy choices or generate a city summary report:
-              </p>
-            </div>
-            <div className="mt-3 pt-2 border-t border-slate-800 flex flex-wrap gap-2">
-              <Link to="/what-if-simulator" className="px-2.5 py-1 rounded-lg bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-xs font-semibold text-teal-200 transition-colors">
-                Run What-If Scenario →
-              </Link>
-              <Link to="/report-generation" className="px-2.5 py-1 rounded-lg bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/30 text-xs font-semibold text-violet-200 transition-colors">
-                View City Report →
+              <Link
+                to="/reports"
+                className="text-xs font-semibold text-slate-400 hover:text-slate-200"
+              >
+                Reports
               </Link>
             </div>
           </div>
@@ -1332,223 +1127,38 @@ export const Dashboard = () => {
       </section>
 
       {/* ══════════════════════════════════════════════════════
-          3. KPI CARDS (6 City Metrics) with Interactive Click Inspector
+          4. CONTEXT & PROVENANCE DISCLOSURE STRIP
       ══════════════════════════════════════════════════════ */}
-      <div>
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm font-bold text-white tracking-wider uppercase">City at a Glance</span>
-            <span className="px-2 py-0.5 text-[10px] rounded-full font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-                Click a card for details. Some data is sample data.
-            </span>
+      <section className="p-4 rounded-xl border border-slate-800 bg-[#0e1420] text-xs text-slate-400">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <strong className="text-slate-200 block mb-0.5">Open-Meteo &amp; CAMS</strong>
+            <span>Numerical weather and atmospheric models. Not roadside physical sensors.</span>
           </div>
-          <span className="text-xs text-slate-500 font-mono hidden sm:inline">
-            Showing values for Year {horizonYear}
-          </span>
+          <div>
+            <strong className="text-slate-200 block mb-0.5">OpenStreetMap</strong>
+            <span>Community-mapped road centerlines, signals, transit stops, and charging points.</span>
+          </div>
+          <div>
+            <strong className="text-slate-200 block mb-0.5">Sensor.Community</strong>
+            <span>Crowdsourced particulate telemetry within 25 km where available.</span>
+          </div>
+          <div>
+            <strong className="text-slate-200 block mb-0.5">Transparent Heuristics</strong>
+            <span>Scenario calculations apply deterministic arithmetic formulas, not black-box AI.</span>
+          </div>
         </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-          <KpiCard 
-            title="Population" 
-            value={dynamicMetrics.population.display} 
-            change={dynamicMetrics.population.change} 
-            trend={dynamicMetrics.population.trend} 
-            status={dynamicMetrics.population.status} 
-            icon={Users} 
-            sparkline={dynamicMetrics.population.sparkline} 
-            colorScheme="blue" 
-            changeLabel="Example data · no live population reading"
-            onClick={() => setInspectedMetric({ title: "Total Population", metric: dynamicMetrics.population, color: "#0ea5e9" })}
-            onExplain={() => setExplainFeature(featureLibrary.Population)}
-          />
-          <KpiCard 
-            title="Traffic Flow / Delay" 
-            value={dynamicMetrics.traffic.display} 
-            change={dynamicMetrics.traffic.change} 
-            trend={dynamicMetrics.traffic.trend} 
-            status={dynamicMetrics.traffic.status} 
-            icon={Car} 
-            sparkline={dynamicMetrics.traffic.sparkline} 
-            colorScheme="rose" 
-            changeLabel={liveTrafficFlow && horizonYear === 2026 && !activeScenario
-              ? "TomTom nearest road · not citywide"
-              : "Example data · no live traffic reading"}
-            onClick={() => setInspectedMetric({ title: "Traffic Congestion", metric: dynamicMetrics.traffic, color: "#f43f5e" })}
-            onExplain={() => setExplainFeature(featureLibrary["Traffic Congestion"])}
-          />
-          <KpiCard 
-            title="Air Quality Index" 
-            value={dynamicMetrics.aqi.display} 
-            change={hasLiveModelAqi ? "Current" : dynamicMetrics.aqi.change} 
-            trend={dynamicMetrics.aqi.trend} 
-            status={dynamicMetrics.aqi.status} 
-            icon={Wind} 
-            sparkline={hasLiveModelAqi ? [] : dynamicMetrics.aqi.sparkline} 
-            colorScheme="amber" 
-            changeLabel={hasLiveModelAqi
-              ? `Open-Meteo model ${modelAqiScale} · not a sensor`
-              : activeScenario || horizonYear !== 2026 ? "Example scenario" : "Example data · no live air reading"}
-            onClick={() => setInspectedMetric({ title: "Air Quality Index", metric: dynamicMetrics.aqi, color: "#f59e0b" })}
-            onExplain={() => setExplainFeature(featureLibrary["Air Quality Index"])}
-          />
-          <KpiCard 
-            title="Water Demand" 
-            value={dynamicMetrics.waterDemand.display} 
-            change={dynamicMetrics.waterDemand.change} 
-            trend={dynamicMetrics.waterDemand.trend} 
-            status={dynamicMetrics.waterDemand.status} 
-            icon={Droplet} 
-            sparkline={dynamicMetrics.waterDemand.sparkline} 
-            colorScheme="cyan" 
-            changeLabel={dynamicMetrics.waterDemand.isLiveEstimate
-              ? "Open-Meteo weather-adj. estimate"
-              : "Example data · no live water reading"}
-            onClick={() => setInspectedMetric({ title: "Water Demand", metric: dynamicMetrics.waterDemand, color: "#22d3ee" })}
-            onExplain={() => setExplainFeature(featureLibrary["Water Demand"])}
-          />
-          <KpiCard 
-            title="Energy Usage" 
-            value={dynamicMetrics.energyUsage.display} 
-            change={dynamicMetrics.energyUsage.change} 
-            trend={dynamicMetrics.energyUsage.trend} 
-            status={dynamicMetrics.energyUsage.status} 
-            icon={Zap} 
-            sparkline={dynamicMetrics.energyUsage.sparkline} 
-            colorScheme="purple" 
-            changeLabel={dynamicMetrics.energyUsage.isLiveEstimate
-              ? "Open-Meteo weather-adj. estimate"
-              : "Example data · no live energy reading"}
-            onClick={() => setInspectedMetric({ title: "Energy Usage", metric: dynamicMetrics.energyUsage, color: "#a78bfa" })}
-            onExplain={() => setExplainFeature(featureLibrary["Energy Usage"])}
-          />
-          <KpiCard 
-            title="Green Cover" 
-            value={dynamicMetrics.greenCover.display} 
-            change={dynamicMetrics.greenCover.change} 
-            trend={dynamicMetrics.greenCover.trend} 
-            status={dynamicMetrics.greenCover.status} 
-            icon={Trees} 
-            sparkline={dynamicMetrics.greenCover.sparkline} 
-            colorScheme="emerald" 
-            changeLabel="Example data · no live green-space reading"
-            onClick={() => setInspectedMetric({ title: "Green Cover", metric: dynamicMetrics.greenCover, color: "#10b981" })}
-            onExplain={() => setExplainFeature(featureLibrary["Green Cover"])}
-          />
-        </div>
-      </div>
+      </section>
 
       {/* ══════════════════════════════════════════════════════
-          3b. LIVE WEATHER CONDITIONS CARD
-      ══════════════════════════════════════════════════════ */}
-      {liveWeather && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="dashboard-glass-panel dashboard-weather-panel p-4 rounded-2xl relative overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, rgba(14,165,233,0.08) 0%, rgba(4,14,38,0.9) 100%)",
-            border: "1px solid rgba(14,165,233,0.25)",
-          }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <Wifi className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-xs font-bold text-white uppercase tracking-wider">Live Weather Conditions</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">
-              Open-Meteo · {city.name}
-            </span>
-            {liveDataLoading && <span className="text-[10px] text-amber-300 animate-pulse">Refreshing…</span>}
-          </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
-            {[
-              {
-                label: "Temperature",
-                value: liveWeather.temperature_2m != null ? `${Number(liveWeather.temperature_2m).toFixed(1)}°C` : "—",
-                sub: liveWeather.apparent_temperature != null ? `Feels ${Number(liveWeather.apparent_temperature).toFixed(1)}°C` : "",
-                icon: Thermometer,
-                color: "#f59e0b",
-              },
-              {
-                label: "Humidity",
-                value: liveWeather.relative_humidity_2m != null ? `${Number(liveWeather.relative_humidity_2m).toFixed(0)}%` : "—",
-                sub: "Relative",
-                icon: Droplet,
-                color: "#38bdf8",
-              },
-              {
-                label: "Wind Speed",
-                value: liveWeather.wind_speed_10m != null ? `${Number(liveWeather.wind_speed_10m).toFixed(1)} km/h` : "—",
-                sub: liveWeather.wind_gusts_10m != null ? `Gusts ${Number(liveWeather.wind_gusts_10m).toFixed(1)} km/h` : "",
-                icon: Wind,
-                color: "#2dd4bf",
-              },
-              {
-                label: "Precipitation",
-                value: liveWeather.precipitation != null ? `${Number(liveWeather.precipitation).toFixed(1)} mm` : "—",
-                sub: "Current hr",
-                icon: CloudRain,
-                color: "#60a5fa",
-              },
-              {
-                label: "UV Index",
-                value: liveWeather.uv_index != null ? String(Number(liveWeather.uv_index).toFixed(1)) : "—",
-                sub: Number(liveWeather.uv_index) >= 8 ? "Very High" : Number(liveWeather.uv_index) >= 6 ? "High" : "Moderate",
-                icon: Sun,
-                color: "#fbbf24",
-              },
-              {
-                label: "Visibility",
-                value: liveWeather.visibility != null ? `${(Number(liveWeather.visibility) / 1000).toFixed(1)} km` : "—",
-                sub: "10m level",
-                icon: Eye,
-                color: "#a78bfa",
-              },
-            ].map((w) => {
-              const Icon = w.icon;
-              return (
-                <div key={w.label} className="dashboard-weather-metric p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                  <div className="flex items-center gap-1.5 text-[10px] text-slate-400 mb-1">
-                    <Icon className="w-3 h-3" style={{ color: w.color }} />
-                    <span>{w.label}</span>
-                  </div>
-                  <div className="text-sm font-bold font-mono text-white">{w.value}</div>
-                  {w.sub && <div className="text-[9px] text-slate-500 mt-0.5">{w.sub}</div>}
-                </div>
-              );
-            })}
-          </div>
-          <p className="mt-2 text-[10px] text-slate-500">
-            Live numerical model values from Open-Meteo. Not official city sensor readings. Used to derive energy/water demand estimates above.
-          </p>
-        </motion.div>
-      )}
-
-      {/* Model-specific views are available from their matching sidebar sections. */}
-
-      {/* ══════════════════════════════════════════════════════
-          8. FUTURE FORECAST PREVIEW
-      ══════════════════════════════════════════════════════ */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="w-4 h-4 text-indigo-400" />
-          <span className="text-sm font-bold text-white tracking-wider uppercase">Future Outlook</span>
-          <span className="px-2 py-0.5 text-[10px] rounded-full font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
-            Example scenarios
-          </span>
-        </div>
-        <FutureForecastPreview />
-      </div>
-
-      {/* ══════════════════════════════════════════════════════
-          9. QUICK ACTIONS
+          5. QUICK ACCESS SHORTCUTS
       ══════════════════════════════════════════════════════ */}
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-white tracking-wider uppercase">Explore More Tools</span>
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Explore Platform Tools</span>
           </div>
-          <span className="text-xs text-slate-500 hidden sm:inline">Open a tool to explore more.</span>
+          <span className="text-xs text-slate-500 hidden sm:inline">Direct shortcuts to specialized workspaces</span>
         </div>
         <QuickActions />
       </div>

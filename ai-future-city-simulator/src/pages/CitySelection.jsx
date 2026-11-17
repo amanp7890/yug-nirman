@@ -109,7 +109,7 @@ export default function CitySelection() {
           <div className="flex items-center gap-3">
             {currentUser && (
               <span className="hidden sm:inline-flex items-center gap-2 text-xs text-slate-300">
-                <span className="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 flex items-center justify-center font-bold text-[11px]">
+                <span className="w-7 h-7 rounded-lg bg-teal-500/15 text-teal-300 border border-teal-500/30 flex items-center justify-center font-bold text-[11px] font-mono">
                   {currentUser.avatar || "US"}
                 </span>
                 <span className="font-medium">{currentUser.name || currentUser.email}</span>
@@ -118,7 +118,7 @@ export default function CitySelection() {
             <button
               type="button"
               onClick={handleLogout}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-700 bg-slate-900/70 text-slate-300 hover:text-white hover:border-cyan-500/50 transition-colors text-sm cursor-pointer"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-700 bg-slate-900/70 text-slate-300 hover:text-white hover:border-slate-500 transition-colors text-sm cursor-pointer"
             >
               <LogOut size={16} />
               Log out
@@ -140,13 +140,13 @@ export default function CitySelection() {
             onChange={(event) => { setSearchText(event.target.value); setFanStartIndex(0); }}
             placeholder="Search city or country…"
             aria-label="Search cities and countries"
-            className="w-full rounded-xl border border-cyan-500/25 bg-slate-950/80 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400"
+            className="w-full rounded-xl border border-slate-800 bg-[#0e141f] px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
           />
           <select
             value={selectedCountry}
             onChange={(event) => { setSelectedCountry(event.target.value); setFanStartIndex(0); }}
             aria-label="Filter cities by country"
-            className="rounded-xl border border-cyan-500/25 bg-slate-950/80 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400"
+            className="rounded-xl border border-slate-800 bg-[#0e141f] px-3 py-2.5 text-sm text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
           >
             <option value="all">All countries ({countries.length})</option>
             {countries.map((country) => (
@@ -238,7 +238,7 @@ export default function CitySelection() {
                 type="button"
                 onClick={() => handleChooseCity(city.id)}
                 aria-label={`${city.name}, ${city.country}`}
-                className="relative overflow-hidden text-left rounded-xl border border-slate-700/80 transition-all duration-200 hover:border-cyan-400/70 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="relative overflow-hidden text-left rounded-xl border border-slate-800 bg-[#0e141f] transition-all duration-200 hover:border-teal-500/60 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
               >
                 <div className="relative aspect-[4/3] bg-gradient-to-br from-sky-950 via-slate-900 to-indigo-950">
                   <div className="absolute inset-0 flex items-center justify-center text-cyan-300/50" aria-hidden="true">

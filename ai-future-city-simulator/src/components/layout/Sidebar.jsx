@@ -25,7 +25,9 @@ import {
   Waves,
   MapPin,
   Droplet,
-  MessageSquare
+  MessageSquare,
+  Compass,
+  CheckCircle2,
 } from "lucide-react";
 import { useCity } from "../../context/CityContext";
 import { useAuth } from "../../context/AuthContext";
@@ -35,209 +37,99 @@ import BrandMark from "../common/BrandMark";
 
 export const NAVIGATION_ITEMS = [
   {
-    section: "START HERE",
-    description: "Get a quick city summary, check the score, and see which indicators need attention.",
+    section: "DECISION WORKSPACE",
+    description: "The core urban decision intelligence journey: Find a problem → Explore location → Review evidence → Compare actions → Select option → Track outcome.",
     items: [
       {
         path: "/dashboard",
-        label: "City Overview",
-        sublabel: "Current condition",
+        label: "Overview",
+        sublabel: "City vitals & active issues",
         icon: LayoutDashboard,
-        badge: "Start Here",
-        badgeStyle: "cyan",
-        storyOutput: "What city is this?",
-      },
-      {
-        path: "/city-health",
-        label: "City Health",
-        sublabel: "Score and key indicators",
-        icon: Activity,
-        storyOutput: "How the city scores on available indicators",
-      },
-      {
-        path: "/city-problems",
-        label: "Possible Problems",
-        sublabel: "Indicators to check",
-        icon: AlertTriangle,
-        storyOutput: "What needs a closer look",
-      },
-    ],
-  },
-  {
-    section: "CITY MAPS",
-    description: "Explore a sample 3D city view or the interactive 2D map.",
-    items: [
-      {
-        path: "/city-3d",
-        label: "3D City View",
-        sublabel: "Illustrative 3D scene",
-        icon: Boxes,
-        badge: "3D",
-        badgeStyle: "purple",
-        storyOutput: "See & interact with the city",
-      },
-      {
-        path: "/digital-twin",
-        label: "City Map",
-        sublabel: "Map and available sensors",
-        icon: MapPin,
-      },
-    ],
-  },
-  {
-    section: "ALERTS & DATA",
-    description: "Review city alerts and find out where the information comes from.",
-    items: [
-      {
-        path: "/intelligence-center",
-        label: "Alerts & Insights",
-        sublabel: "What may need attention",
-        icon: Sparkles,
-      },
-      {
-        path: "/data-center",
-        label: "Data Sources",
-        sublabel: "Where the information comes from",
-        icon: Database,
-      },
-    ],
-  },
-  {
-    section: "CITY SERVICES",
-    description: "Explore traffic, air, weather, water, energy, climate, and population information.",
-    items: [
-      {
-        path: "/transportation",
-        label: "Traffic & Transport",
-        sublabel: "Roads, transit, and travel",
-        icon: Car,
-      },
-      {
-        path: "/environment",
-        label: "Air & Weather",
-        sublabel: "Air quality and weather",
-        icon: Leaf,
-      },
-      {
-        path: "/climate-risks",
-        label: "Weather & Risk Checks",
-        sublabel: "Rain, heat, and storm checks",
-        icon: Waves,
-        alert: true,
-      },
-      {
-        path: "/sustainability#water-consumption",
-        label: "Water Use",
-        sublabel: "Demand and storage",
-        icon: Droplet,
-      },
-      {
-        path: "/sustainability",
-        label: "Energy & Sustainability",
-        sublabel: "Energy and water use",
-        icon: Zap,
-      },
-      {
-        path: "/population-profile",
-        label: "Population",
-        sublabel: "Population estimates",
-        icon: Users,
-      },
-    ],
-  },
-  {
-    section: "FORECASTS",
-    description: "Explore forecasts and sample views of how the city could change.",
-    items: [
-      {
-        path: "/future-predictions",
-        label: "Future Outlook",
-        sublabel: "Forecasts by city and year",
-        icon: TrendingUp,
-        badge: "SAMPLE",
+        badge: "01",
         badgeStyle: "slate",
-        storyOutput: "What happens if trends continue?",
+        storyOutput: "What is happening in this city?",
       },
-    ],
-  },
-  {
-    section: "TRY A SCENARIO",
-    description: "Change a few settings to explore an example of what could happen.",
-    items: [
       {
-        path: "/what-if-simulator",
-        label: "What-If Scenario",
-        sublabel: "Explore example outcomes",
+        path: "/explore",
+        label: "Explore City",
+        sublabel: "2D/3D maps & telemetry",
+        icon: MapPin,
+        badge: "02",
+        badgeStyle: "slate",
+        storyOutput: "Where is it happening?",
+      },
+      {
+        path: "/problems",
+        label: "Problems & Insights",
+        sublabel: "Screening & evidence hub",
+        icon: AlertTriangle,
+        badge: "03",
+        badgeStyle: "amber",
+        storyOutput: "What evidence supports it?",
+      },
+      {
+        path: "/action-planner",
+        label: "Action Planner",
+        sublabel: "Compare & rank interventions",
+        icon: Compass,
+        badge: "SIGNATURE",
+        badgeStyle: "teal",
+        storyOutput: "Which action should be prioritized?",
+      },
+      {
+        path: "/scenario-planner",
+        label: "Scenario Lab",
+        sublabel: "Baseline vs Option A vs B",
         icon: FlaskConical,
+        badge: "05",
+        badgeStyle: "slate",
+        storyOutput: "How can we measure the impact?",
       },
-    ],
-  },
-  {
-    section: "SUGGESTIONS",
-    description: "Review sample ideas for city planning. Check the evidence before using them.",
-    items: [
       {
-        path: "/ai-recommendations",
-        label: "Planning Suggestions",
-        sublabel: "Ideas to review",
-        icon: Bot,
+        path: "/implementation-tracker",
+        label: "Implementation Tracker",
+        sublabel: "Delivery & milestone tracking",
+        icon: CheckCircle2,
+        badge: "06",
+        badgeStyle: "teal",
+        storyOutput: "How can the intervention be measured?",
       },
-    ],
-  },
-  {
-    section: "COMPARE RESULTS",
-    description: "Compare example results from different city scenarios.",
-    items: [
       {
-        path: "/scenario-comparison",
-        label: "Compare Scenarios",
-        sublabel: "See example results side by side",
-        icon: GitCompare,
-        badge: "COMPARE",
-        badgeStyle: "cyan",
-        storyOutput: "Review supported impact and limitations",
-      },
-    ],
-  },
-  {
-    section: "REPORTS",
-    description: "Create and export a report about the selected city.",
-    items: [
-      {
-        path: "/report-generation",
-        label: "City Report",
-        sublabel: "Details and data sources",
+        path: "/reports",
+        label: "Reports & Analysis",
+        sublabel: "Audited decision exports",
         icon: FileText,
-        storyOutput: "Complete simulation report",
+        badge: "07",
+        badgeStyle: "slate",
+        storyOutput: "Complete decision record",
       },
     ],
   },
   {
-    section: "COMMUNICATION",
-    description: "Citizen inquiries, municipal discussion, and administration chat.",
+    section: "SYSTEM PREFERENCES",
+    description: "City profile selection and interface preferences.",
     items: [
-      {
-        path: "/messages",
-        label: "Messages & Chat",
-        sublabel: "Support and discussions",
-        icon: MessageSquare,
-        badge: "Chat",
-        badgeStyle: "purple",
-      },
-    ],
-  },
-  {
-    section: "DEMO SETTINGS",
-    description: "Review the current browser session and display preferences.",
-    items: [
-      { path: "/history", label: "Recent Activity", sublabel: "Pages and cities you viewed", icon: History },
       { path: "/settings", label: "Settings", sublabel: "City and display options", icon: Settings },
     ],
   },
 ];
 
-// Flat list for other consumers
-export const FLAT_NAVIGATION_ITEMS = NAVIGATION_ITEMS.flatMap((g) => g.items);
+// Flat list for other consumers (Navbar search & active page matcher)
+export const FLAT_NAVIGATION_ITEMS = [
+  ...NAVIGATION_ITEMS.flatMap((g) => g.items),
+  // Legacy aliases to preserve seamless header titles on existing URLs
+  { path: "/digital-twin", label: "Explore City", sublabel: "2D Spatial Map", icon: MapPin },
+  { path: "/city-3d", label: "Explore City (3D)", sublabel: "3D City Scene", icon: Boxes },
+  { path: "/city-problems", label: "Problems & Insights", sublabel: "Active Problems", icon: AlertTriangle },
+  { path: "/climate-risks", label: "Climate & Hazard Screening", sublabel: "Risk Checks", icon: Waves },
+  { path: "/what-if-simulator", label: "Scenario Planner", sublabel: "Simulation Engine", icon: FlaskConical },
+  { path: "/scenario-comparison", label: "Scenario Planner", sublabel: "Compare Results", icon: GitCompare },
+  { path: "/report-generation", label: "Reports", sublabel: "Report Generation", icon: FileText },
+  { path: "/transportation", label: "Explore City (Traffic)", sublabel: "Roads & Transit", icon: Car },
+  { path: "/environment", label: "Explore City (Air)", sublabel: "Air & Weather", icon: Leaf },
+  { path: "/sustainability", label: "Explore City (Energy)", sublabel: "Energy & Water", icon: Zap },
+  { path: "/population-profile", label: "Explore City (Demographics)", sublabel: "Population", icon: Users },
+];
 
 export const Sidebar = () => {
   const { sidebarCollapsed, setSidebarCollapsed, mobileMenuOpen, setMobileMenuOpen, unreadAlertCount } = useCity();
@@ -391,10 +283,10 @@ export const Sidebar = () => {
                   aria-label={item.label}
                   aria-current={isActive ? "page" : undefined}
                   title={sidebarCollapsed ? item.label : undefined}
-                  className={`premium-sidebar-link relative flex min-h-11 items-center gap-3 rounded-xl border px-3 py-2 text-sm font-medium transition-all duration-200 group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 ${
+                  className={`premium-sidebar-link relative flex min-h-10 items-center gap-2.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors group focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 ${
                     isActive
-                      ? "is-active text-cyan-100 bg-cyan-400/10 border-cyan-300/35 shadow-md shadow-cyan-950/30"
-                      : "text-slate-400 border-transparent hover:border-cyan-300/15 hover:bg-slate-800/50 hover:text-slate-100"
+                      ? "is-active text-slate-100 bg-slate-800/80 border-slate-700"
+                      : "text-slate-400 border-transparent hover:border-slate-800 hover:bg-slate-800/40 hover:text-slate-200"
                   }`}
                 >
                   {isActive && (
@@ -402,35 +294,30 @@ export const Sidebar = () => {
                       layoutId="sidebar-active-indicator"
                       aria-hidden="true"
                       transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                      className="premium-sidebar-indicator absolute -left-px top-2 bottom-2 w-[3px] rounded-full bg-gradient-to-b from-cyan-200 via-cyan-400 to-teal-300 shadow-[0_0_14px_rgba(34,211,238,0.95)]"
+                      className="premium-sidebar-indicator absolute -left-px top-1.5 bottom-1.5 w-[3px] rounded-full bg-teal-500"
                     />
                   )}
 
                   {/* Step number dot (collapsed: just icon; expanded: number dot) */}
                   {!sidebarCollapsed && item.step && (
-                    <span className={`text-[9px] font-black font-mono w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                    <span className={`text-[9px] font-mono w-4 h-4 rounded flex items-center justify-center shrink-0 ${
                       isActive
-                        ? "bg-cyan-500/30 text-cyan-300"
-                        : "bg-slate-800 text-slate-500 group-hover:bg-slate-700 group-hover:text-slate-300"
+                        ? "bg-teal-500/20 text-teal-300 font-bold"
+                        : "bg-slate-800 text-slate-500"
                     }`}>
                       {item.step}
                     </span>
                   )}
 
-                  <motion.span
-                    whileHover={{ y: -2, rotate: -5, scale: 1.12 }}
-                    whileTap={{ scale: 0.86, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 14 }}
-                    className="relative flex h-5 w-5 flex-shrink-0 items-center justify-center"
-                  >
+                  <span className="relative flex h-4 w-4 flex-shrink-0 items-center justify-center">
                     <Icon
-                      className={`h-[18px] w-[18px] transition-colors duration-200 ${
+                      className={`h-4 w-4 transition-colors ${
                         isActive
-                          ? "text-cyan-300 drop-shadow-[0_0_8px_rgba(0,240,255,0.75)]"
-                          : "text-slate-400 group-hover:text-cyan-300"
+                          ? "text-teal-400"
+                          : "text-slate-400 group-hover:text-slate-200"
                       }`}
                     />
-                  </motion.span>
+                  </span>
                   {sidebarCollapsed && item.path === "/messages" && unreadMessageCount > 0 && (
                     <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-slate-950 animate-pulse" />
                   )}

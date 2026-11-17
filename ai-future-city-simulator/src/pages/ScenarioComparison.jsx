@@ -95,11 +95,13 @@ export const ScenarioComparison = () => {
       />
 
       {/* Investment scale controller */}
-      <section className="flex flex-col gap-4 rounded-2xl border border-cyan-500/20 bg-slate-900/80 p-4 sm:flex-row sm:items-center sm:justify-between shadow-lg">
+      <section className="fieldwork-card flex flex-col gap-4 rounded-xl border border-slate-800 bg-[#121824] p-4 sm:flex-row sm:items-center sm:justify-between shadow-sm">
         <div className="flex items-center gap-3">
-          <Sliders className="h-5 w-5 shrink-0 text-cyan-300" />
+          <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 p-2 text-teal-400">
+            <Sliders className="h-4 w-4 shrink-0" />
+          </div>
           <div>
-            <h2 className="text-sm font-bold uppercase tracking-wide text-white">Investment Level & Scale</h2>
+            <h2 className="text-sm font-bold tracking-tight text-white">Investment Level & Scale</h2>
             <p className="text-xs text-slate-400">
               Adjust the funding level to see how higher or lower investment changes estimated results.
             </p>
@@ -114,9 +116,9 @@ export const ScenarioComparison = () => {
             step="5"
             value={investmentScale}
             onChange={(event) => setInvestmentScale(Number(event.target.value))}
-            className="w-40 cursor-pointer accent-cyan-400 sm:w-56"
+            className="w-40 cursor-pointer accent-teal-500 sm:w-56"
           />
-          <span className="min-w-20 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1.5 text-center font-mono text-xs font-bold text-cyan-200">
+          <span className="min-w-20 rounded-lg border border-slate-700 bg-slate-800/60 px-2.5 py-1.5 text-center font-mono text-xs font-bold text-slate-200">
             {investmentScale}% Scale
           </span>
         </label>
@@ -126,7 +128,7 @@ export const ScenarioComparison = () => {
       <section aria-labelledby="scenario-cards-title">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-300">Target Horizon: 2035</p>
+            <p className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-teal-400">Target Horizon: 2035</p>
             <h2 id="scenario-cards-title" className="mt-1 text-lg font-black text-white">Choose a planning scenario</h2>
           </div>
           <p className="text-[11px] text-slate-400">Select a scenario to evaluate its comprehensive Before vs After transformation.</p>
@@ -136,25 +138,25 @@ export const ScenarioComparison = () => {
           {scenarios.map((scenario) => {
             const isSelected = selectedScenarioId === scenario.id;
             const borderColor = scenario.accent === "emerald"
-              ? "border-emerald-400/30"
+              ? "border-emerald-500/30"
               : scenario.accent === "cyan"
-                ? "border-cyan-400/30"
-                : "border-slate-700";
+                ? "border-teal-500/30"
+                : "border-slate-800";
             return (
               <article
                 key={scenario.id}
-                className={`flex flex-col justify-between rounded-2xl border bg-slate-950/75 p-4 transition ${borderColor} ${
-                  isSelected ? "ring-2 ring-cyan-400/70 shadow-lg shadow-cyan-950/40" : "hover:border-slate-500"
+                className={`fieldwork-card flex flex-col justify-between rounded-xl border bg-[#121824] p-4 transition ${borderColor} ${
+                  isSelected ? "ring-2 ring-teal-500 shadow-md shadow-teal-950/40" : "hover:border-slate-700"
                 }`}
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">{scenario.subtitle}</p>
+                      <p className="text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-slate-400">{scenario.subtitle}</p>
                       <h3 className="mt-1 text-base font-black text-white">{scenario.name}</h3>
                     </div>
                     {isSelected && (
-                      <span className="rounded-full bg-cyan-400/15 border border-cyan-400/30 px-2 py-0.5 text-[9px] font-bold uppercase text-cyan-200">
+                      <span className="rounded-full bg-teal-500/15 border border-teal-500/30 px-2 py-0.5 text-[9px] font-mono font-bold uppercase text-teal-300">
                         Active
                       </span>
                     )}
@@ -170,7 +172,7 @@ export const ScenarioComparison = () => {
                       ["CapEx outlay", scenario.metrics.capex],
                       ["Health score", scenario.metrics.health],
                     ].map(([label, value]) => (
-                      <div key={label} className="rounded-lg border border-slate-800 bg-slate-900/70 p-2">
+                      <div key={label} className="rounded-lg border border-slate-800/80 bg-[#0e141f] p-2">
                         <p className="text-[9px] uppercase tracking-wide text-slate-500">{label}</p>
                         <p className="mt-0.5 text-xs font-bold text-slate-100 font-mono">{value}</p>
                       </div>
@@ -179,13 +181,13 @@ export const ScenarioComparison = () => {
 
                   <div className="mt-3 grid gap-2 border-t border-slate-800 pt-3 text-[10px]">
                     <div>
-                      <p className="font-bold uppercase tracking-wide text-emerald-300">Advantages</p>
+                      <p className="font-bold uppercase tracking-wide text-emerald-400">Advantages</p>
                       <ul className="mt-1 space-y-0.5 text-slate-300">
                         {scenario.advantages.map((item) => <li key={item}>✓ {item}</li>)}
                       </ul>
                     </div>
                     <div>
-                      <p className="font-bold uppercase tracking-wide text-rose-300">Trade-offs</p>
+                      <p className="font-bold uppercase tracking-wide text-rose-400">Trade-offs</p>
                       <ul className="mt-1 space-y-0.5 text-slate-400">
                         {scenario.tradeoffs.map((item) => <li key={item}>⚠ {item}</li>)}
                       </ul>
@@ -197,10 +199,10 @@ export const ScenarioComparison = () => {
                   type="button"
                   aria-pressed={isSelected}
                   onClick={() => setSelectedScenarioId(scenario.id)}
-                  className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold transition cursor-pointer ${
+                  className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition cursor-pointer ${
                     isSelected
-                      ? "bg-cyan-400 text-slate-950 font-black shadow-md shadow-cyan-400/25"
-                      : "border border-slate-700 bg-slate-900 text-slate-200 hover:border-cyan-400/50"
+                      ? "bg-teal-600 hover:bg-teal-500 text-white font-bold shadow-sm"
+                      : "border border-slate-700 bg-slate-850 text-slate-200 hover:border-slate-600"
                   }`}
                 >
                   {isSelected && <CheckCircle2 className="h-4 w-4" />}

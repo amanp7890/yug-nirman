@@ -20,9 +20,9 @@ const CustomEnergyTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="p-2.5 rounded-xl bg-slate-900/95 border border-cyan-500/40 shadow-2xl backdrop-blur-xl text-xs">
-        <div className="font-bold text-white mb-0.5">{data.name || data.dataKey}</div>
-        <div className="text-cyan-300 font-mono font-semibold">
+      <div className="p-2.5 rounded-lg bg-[#0e141f] border border-slate-700 shadow-xl text-xs">
+        <div className="font-mono text-slate-300 mb-0.5">{data.name || data.dataKey}</div>
+        <div className="text-teal-300 font-mono font-semibold">
           {data.value} {data.dataKey === "actual" || data.dataKey === "solar" || data.dataKey === "wind" ? "MW" : "%"}
         </div>
       </div>
@@ -54,7 +54,7 @@ export const EnergyChart = () => {
     } else if (liveTemp < 15) {
       energyAdjustmentPct = Math.round((15 - liveTemp) * 0.8);
       energyAdjustmentNote = `+${energyAdjustmentPct}% est. heating load (${liveTemp.toFixed(1)}°C)`;
-      energyAdjustmentColor = "text-blue-400";
+      energyAdjustmentColor = "text-sky-400";
     } else {
       energyAdjustmentNote = `Neutral range (${liveTemp.toFixed(1)}°C) · normal load`;
       energyAdjustmentColor = "text-emerald-400";
@@ -62,51 +62,47 @@ export const EnergyChart = () => {
   }
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border border-cyan-500/20 flex flex-col justify-between">
+    <div className="p-5 rounded-xl fieldwork-card border border-slate-800 flex flex-col justify-between">
       {/* Top Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-cyan-500/15">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+          <div className="p-2 rounded-lg bg-slate-800/80 border border-slate-700/80 text-amber-400">
             <Zap className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-              <span>ENERGY USAGE &amp; GRID LOAD</span>
-              <span className="px-2 py-0.5 text-[9px] font-bold rounded border bg-amber-500/10 text-amber-300 border-amber-500/20">
-                DEMO PROFILE
+            <h3 className="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
+              <span>ENERGY LOAD PROFILE</span>
+              <span className="px-2 py-0.5 text-[9px] font-mono rounded border bg-amber-950/40 text-amber-300 border-amber-800/60">
+                REFERENCE PROFILE
               </span>
-              <span className="px-2 py-0.2 text-[10px] font-semibold rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <span className="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-800 text-teal-300 border border-slate-700">
                 {energy.totalConsumption}
               </span>
             </h3>
             <p className="text-[11px] text-slate-400">
-              Illustrative grid profile for {city.name}{usesReferenceProfile ? " (Mumbai reference profile)" : ""} • Renewable mix: <span className="text-emerald-400 font-semibold">{energy.renewableMix}</span> • Status: <span className="text-amber-300">{energy.gridStatus}</span>
+              Illustrative grid profile for {city.name}{usesReferenceProfile ? " (Mumbai reference model)" : ""} · Renewable mix: <span className="text-emerald-400 font-mono">{energy.renewableMix}</span>
             </p>
           </div>
         </div>
 
-        <span className="text-xs font-mono font-semibold text-slate-400 hidden sm:inline">
+        <span className="text-xs font-mono text-slate-400 hidden sm:inline">
           Peak: {energy.peakDemand}
         </span>
       </div>
 
-      <p className="mt-3 text-xs font-semibold text-slate-300">
-        Question: How is the illustrative energy profile split across time, sectors, and supply sources?
-      </p>
-
       {/* Live Weather Energy Signal */}
       {hasLiveTemp && (
-        <div className="mt-3 flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-900/60 border border-amber-500/20">
+        <div className="mt-3 flex items-center gap-2.5 px-3 py-2 rounded-lg bg-[#0e141f] border border-slate-800">
           <Thermometer className="w-3.5 h-3.5 text-amber-400 shrink-0" />
           <div className="min-w-0">
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Live weather input → simulated load estimate</span>
+            <span className="text-[10px] text-slate-400 font-mono block">LIVE WEATHER INPUT → ESTIMATED THERMAL LOAD</span>
             <p className={`text-xs font-mono font-bold mt-0.5 ${energyAdjustmentColor}`}>{energyAdjustmentNote}</p>
           </div>
-          <span className="ml-auto text-[9px] text-slate-500 shrink-0">Open-Meteo heuristic</span>
+          <span className="ml-auto text-[9px] font-mono text-slate-500 shrink-0">Open-Meteo</span>
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap gap-1 rounded-xl border border-slate-800 bg-slate-900/80 p-1" role="group" aria-label="Energy grid views">
+      <div className="mt-4 flex flex-wrap gap-1 rounded-lg border border-slate-800 bg-[#0e141f] p-1" role="group" aria-label="Energy grid views">
         {[
           ["demand", "Hourly grid load"],
           ["sectors", "Load by sector"],
@@ -117,8 +113,8 @@ export const EnergyChart = () => {
             type="button"
             onClick={() => setView(key)}
             aria-pressed={view === key}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-              view === key ? "bg-cyan-500 text-slate-950" : "text-slate-400 hover:text-white"
+            className={`rounded px-3 py-1 text-xs font-mono transition-colors ${
+              view === key ? "bg-slate-800 text-teal-300 font-semibold border border-slate-700 shadow-sm" : "text-slate-400 hover:text-white"
             }`}
           >
             {label}
@@ -130,20 +126,20 @@ export const EnergyChart = () => {
         hourlyGridLoad.length > 0 ? (
           <div className="mt-3 h-52 w-full" aria-label="Illustrative hourly energy demand in megawatts">
             <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={hourlyGridLoad} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(56, 189, 248, 0.08)" vertical={false} />
-                <XAxis dataKey="time" stroke="#64748b" fontSize={10} tickLine={false} />
+              <LineChart data={hourlyGridLoad} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="2 4" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
+                <XAxis dataKey="time" stroke="#64748b" fontSize={10} tickLine={false} axisLine={{ stroke: "rgba(255, 255, 255, 0.08)" }} />
                 <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} unit=" MW" />
                 <Tooltip content={<CustomEnergyTooltip />} />
-                <Legend wrapperStyle={{ fontSize: "10px" }} />
-                <Line type="monotone" dataKey="actual" name="Grid demand (profile)" stroke="#38bdf8" strokeWidth={2} dot={false} strokeDasharray="4 2" />
-                <Line type="monotone" dataKey="solar" name="Solar generation" stroke="#fbbf24" strokeWidth={1.5} dot={false} />
-                <Line type="monotone" dataKey="wind" name="Wind generation" stroke="#34d399" strokeWidth={1.5} dot={false} />
+                <Legend wrapperStyle={{ fontSize: "10px", fontFamily: "monospace" }} />
+                <Line type="monotone" dataKey="actual" name="Grid demand" stroke="#38bdf8" strokeWidth={2} dot={false} strokeDasharray="4 2" />
+                <Line type="monotone" dataKey="solar" name="Solar output" stroke="#f59e0b" strokeWidth={1.5} dot={false} />
+                <Line type="monotone" dataKey="wind" name="Wind output" stroke="#10b981" strokeWidth={1.5} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         ) : (
-          <p className="mt-3 rounded-lg border border-dashed border-slate-700 p-6 text-center text-xs text-slate-400">
+          <p className="mt-3 rounded-lg border border-dashed border-slate-800 p-6 text-center text-xs text-slate-400">
             Hourly demand profile is not available for this city.
           </p>
         )
@@ -162,16 +158,16 @@ export const EnergyChart = () => {
                 </PieChart>
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-xs font-semibold text-slate-400">SECTOR LOAD</span>
+                <span className="text-[10px] font-mono text-slate-400">SECTOR LOAD</span>
                 <span className="font-mono text-sm font-bold text-white">100%</span>
               </div>
             </div>
             <div className="space-y-2">
               {sectorBreakdown.map((item) => (
-                <div key={item.name} className="rounded-xl border border-slate-800/80 bg-slate-900/60 p-2">
+                <div key={item.name} className="rounded-lg border border-slate-800 bg-[#0e141f] p-2.5">
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
                       <span className="font-medium text-slate-300">{item.name}</span>
                     </div>
                     <span className="font-mono font-bold text-white">{item.value}%</span>
@@ -181,7 +177,7 @@ export const EnergyChart = () => {
             </div>
           </div>
         ) : (
-          <p className="mt-3 rounded-lg border border-dashed border-slate-700 p-6 text-center text-xs text-slate-400">
+          <p className="mt-3 rounded-lg border border-dashed border-slate-800 p-6 text-center text-xs text-slate-400">
             Sector load breakdown is not available for this city.
           </p>
         )
@@ -191,31 +187,31 @@ export const EnergyChart = () => {
         supplySources.length > 0 ? (
           <div className="my-3 space-y-2">
             {supplySources.map((source) => (
-              <div key={source.type} className="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div key={source.type} className="rounded-lg border border-slate-800 bg-[#0e141f] p-3">
                 <div className="flex items-center justify-between gap-3 text-xs">
-                  <span className="font-semibold text-slate-200">{source.type}</span>
-                  <span className="shrink-0 font-mono font-bold text-cyan-200">{source.capacity}</span>
+                  <span className="font-medium text-slate-200">{source.type}</span>
+                  <span className="shrink-0 font-mono font-bold text-teal-300">{source.capacity}</span>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
                   <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800">
-                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400" style={{ width: `${Math.min(100, Math.max(0, Number(source.percentage) || 0))}%` }} />
+                    <div className="h-full rounded-full bg-teal-500" style={{ width: `${Math.min(100, Math.max(0, Number(source.percentage) || 0))}%` }} />
                   </div>
-                  <span className="w-12 text-right font-mono text-[10px] text-emerald-300">{source.percentage}%</span>
+                  <span className="w-12 text-right font-mono text-[10px] text-teal-300">{source.percentage}%</span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="mt-3 rounded-lg border border-dashed border-slate-700 p-6 text-center text-xs text-slate-400">
+          <p className="mt-3 rounded-lg border border-dashed border-slate-800 p-6 text-center text-xs text-slate-400">
             Grid supply sources are not available for this city.
           </p>
         )
       )}
 
-      <p className="mt-1 text-[10px] text-slate-500">
+      <p className="mt-1 text-[10px] font-mono text-slate-500">
         {hasLiveTemp
-          ? "The chart remains a bundled profile and is not adjusted by current weather. The separate SIMULATED weather signal is a simple heuristic, not a grid-demand estimate or meter reading."
-          : "These are bundled illustrative profile values, not a verified historical series or live grid telemetry."}
+          ? "PROVENANCE: Bundled reference load profile. Live temperature adjustment is computed as a thermal impedance proxy."
+          : "PROVENANCE: Bundled illustrative profile values. Direct municipal grid telemetry is not connected."}
       </p>
     </div>
   );

@@ -1960,50 +1960,50 @@ export const City3D = ({ embedded = false }) => {
         )}
 
         {/* Sample profile overlay */}
-        {showSceneUi && <div className="absolute bottom-4 left-4 max-w-sm space-y-2 rounded-2xl border border-cyan-200/30 bg-[#07111f]/95 p-4 text-[12px] font-medium leading-relaxed text-slate-100 shadow-[0_18px_48px_rgba(0,0,0,0.58)] backdrop-blur-2xl pointer-events-none z-10">
+        {showSceneUi && <div className="absolute bottom-4 left-4 max-w-sm space-y-2 rounded-xl border border-slate-800 bg-[#0e1420]/95 p-4 text-[12px] font-medium leading-relaxed text-slate-200 shadow-xl pointer-events-none z-10">
           <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.8)]" />
-            <span className="text-[12px] font-extrabold tracking-wide text-white">{cityName.toUpperCase()} · DEMO SCENE</span>
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span className="text-xs font-bold tracking-wide text-slate-100">{cityName.toUpperCase()} · ARCHITECTURAL MODEL</span>
           </div>
 
           <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] font-mono font-semibold">
             <div className="flex justify-between">
-              <span className="text-slate-200">Traffic</span>
-              <span className="text-rose-200 font-extrabold">{trafficPct}%</span>
+              <span className="text-slate-400">Traffic</span>
+              <span className="text-slate-100 font-bold">{trafficPct}%</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-200">Grid load</span>
-              <span className="text-amber-200 font-extrabold">{energyPct}%</span>
+              <span className="text-slate-400">Grid load</span>
+              <span className="text-slate-100 font-bold">{energyPct}%</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-200">Air quality</span>
-              <span className="text-cyan-100 font-extrabold">{aqiVal} AQI</span>
+              <span className="text-slate-400">Air quality</span>
+              <span className="text-slate-100 font-bold">{aqiVal} AQI</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-200">Green cover</span>
-              <span className="text-emerald-200 font-extrabold">{greenPct}%</span>
+              <span className="text-slate-400">Green cover</span>
+              <span className="text-emerald-400 font-bold">{greenPct}%</span>
             </div>
           </div>
 
           {legend && (
             <div className="pt-1.5 border-t border-slate-800">
               <div className={`h-1.5 w-full rounded-full ${legend[0]}`} />
-              <div className="mt-1 flex justify-between text-[11px] font-semibold text-white">
+              <div className="mt-1 flex justify-between text-[11px] font-semibold text-slate-300">
                 <span>{legend[1]}</span>
                 <span>{legend[2]}</span>
               </div>
             </div>
           )}
-          <p className="border-t border-white/15 pt-2 text-[11px] font-medium leading-relaxed text-slate-200">
-            Drag to orbit · Shift/right-drag to pan · Scroll to zoom. Problem effects include profile data and illustrative simulated event locations.
+          <p className="border-t border-slate-800 pt-2 text-[10px] text-slate-400 leading-relaxed">
+            Drag to orbit · Shift/right-drag to pan · Scroll to zoom. Illustrative procedural geometry.
           </p>
         </div>}
 
         {/* Bottom Right generated geometry counts */}
-        {showSceneUi && <div className="absolute bottom-4 right-4 rounded-2xl border border-cyan-200/30 bg-[#07111f]/95 p-4 text-right text-[11px] font-medium leading-relaxed text-slate-100 shadow-[0_18px_48px_rgba(0,0,0,0.58)] backdrop-blur-2xl pointer-events-none z-10">
-          <div className="font-mono text-[12px] font-extrabold text-cyan-100">Generated {cityName} scene</div>
-          <div className="mt-1 font-mono text-[11px] text-slate-200">
-            {stats.buildings} demo buildings · {stats.trees} demo trees · {stats.vehicles} demo vehicles · {stats.bridges} demo bridges · {stats.sensors} demo markers
+        {showSceneUi && <div className="absolute bottom-4 right-4 rounded-xl border border-slate-800 bg-[#0e1420]/95 p-3 text-right text-[10px] font-mono leading-relaxed text-slate-300 shadow-xl pointer-events-none z-10">
+          <div className="text-slate-100 font-bold">{cityName} Scene Entities</div>
+          <div className="mt-0.5 text-slate-400">
+            {stats.buildings} buildings · {stats.trees} trees · {stats.vehicles} vehicles · {stats.bridges} bridges
           </div>
         </div>}
         {sceneActionError && (

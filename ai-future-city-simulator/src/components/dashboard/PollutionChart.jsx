@@ -41,23 +41,23 @@ const CustomPollutionTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="p-3 rounded-xl bg-slate-900/95 border border-amber-500/40 shadow-2xl backdrop-blur-xl text-xs">
-        <div className="text-amber-300 font-bold mb-1 border-b border-slate-800 pb-1 flex items-center justify-between gap-3">
-          <span>Time: {label}</span>
-          <span className="text-[10px] text-slate-400">Hourly AQI values</span>
+      <div className="p-3 rounded-lg bg-[#0e141f] border border-slate-700 shadow-xl text-xs">
+        <div className="text-slate-300 font-semibold mb-1 border-b border-slate-800 pb-1 flex items-center justify-between gap-3">
+          <span className="font-mono">T: {label}</span>
+          <span className="text-[10px] text-slate-500">Hourly Atmospheric Model</span>
         </div>
         <div className="space-y-1 mt-1">
           <div className="flex justify-between gap-4">
-            <span className="text-slate-400">Composite AQI:</span>
+            <span className="text-slate-400">AQI Index:</span>
             <span className="font-mono font-bold text-amber-400">{data.aqi}</span>
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-slate-400">PM 2.5:</span>
-            <span className="font-mono font-semibold text-rose-400">{data.pm25} µg/m³</span>
+            <span className="font-mono font-semibold text-rose-300">{data.pm25} µg/m³</span>
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-slate-400">PM 10:</span>
-            <span className="font-mono font-semibold text-cyan-300">{data.pm10} µg/m³</span>
+            <span className="font-mono font-semibold text-teal-300">{data.pm10} µg/m³</span>
           </div>
         </div>
       </div>
@@ -138,35 +138,35 @@ export const PollutionChart = () => {
   const statusStyle = getStatusColor(isUsingLiveModel ? "MODEL" : pollution.status);
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border border-cyan-500/20 flex flex-col justify-between">
+    <div className="p-5 rounded-xl fieldwork-card border border-slate-800 flex flex-col justify-between">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-cyan-500/15">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+          <div className="p-2 rounded-lg bg-slate-800/80 border border-slate-700/80 text-amber-400">
             <Wind className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
               <span>AIR QUALITY CONDITIONS</span>
-              <span className={`px-2 py-0.2 text-[10px] font-bold rounded-full border ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}>
+              <span className={`px-2 py-0.5 text-[10px] font-mono font-medium rounded border ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}>
                 {currentAqi} {isUsingLiveModel ? aqiScale : "AQI"} • {isUsingLiveModel ? "OPEN-METEO MODEL" : "SAMPLE PROFILE"}
               </span>
             </h3>
             <p className="text-[11px] text-slate-400">
               {isUsingLiveModel
-                ? `Open-Meteo/CAMS ${aqiScale} model for ${city.name} • Not a municipal sensor-station reading`
-                : `Bundled sample air-quality profile${city.dataMode === "illustrative" ? " (reference-city values)" : ""} • Live model data is not available`}
+                ? `Open-Meteo/CAMS ${aqiScale} atmospheric dispersion model for ${city.name} · Not direct municipal sensor telemetry`
+                : `Bundled reference air-quality profile${city.dataMode === "illustrative" ? " (reference values)" : ""} · Live model data is currently unavailable`}
             </p>
           </div>
         </div>
 
         {/* Categories Legend */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
           {AQI_LEVELS.map((level, idx) => (
             <span
               key={idx}
               title={`AQI ${level.range}`}
-              className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border whitespace-nowrap cursor-default ${level.bg} ${level.color} ${level.border}`}
+              className={`px-2 py-0.5 text-[10px] font-mono rounded border whitespace-nowrap cursor-default ${level.bg} ${level.color} ${level.border}`}
             >
               {level.label}
             </span>
@@ -174,21 +174,22 @@ export const PollutionChart = () => {
         </div>
       </div>
 
-      <p className="mt-3 text-xs font-semibold text-slate-300">
-        Question: How does the hourly air-quality profile change through the day?
-      </p>
+      <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+        <span>Hourly pollutant concentration progression (24-hour cycle)</span>
+        <span className="font-mono text-[11px] text-slate-500">Resolution: 1h step</span>
+      </div>
 
       {/* Main Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 my-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-3">
         {pollutantValues.map((p, idx) => (
-          <div key={idx} className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
+          <div key={idx} className="p-3 rounded-lg bg-[#0e141f] border border-slate-800/80">
             <div className="text-[11px] text-slate-400 flex items-center justify-between">
-              <span>{p.name}</span>
-              {p.standard && <span className="text-[9px] text-slate-500">Std: {p.standard}</span>}
+              <span className="font-medium text-slate-300">{p.name}</span>
+              {p.standard && <span className="text-[9px] font-mono text-slate-500">Std: {p.standard}</span>}
             </div>
-            <div className="mt-1 flex items-baseline gap-1">
-              <span className="text-base font-bold font-mono text-white">{p.value}</span>
-              <span className="text-[10px] text-slate-400">{p.unit}</span>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="text-lg font-bold font-mono text-white">{p.value}</span>
+              <span className="text-[10px] font-mono text-slate-400">{p.unit}</span>
             </div>
           </div>
         ))}
@@ -198,13 +199,13 @@ export const PollutionChart = () => {
       <div className="h-56 w-full mt-1">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(56, 189, 248, 0.08)" vertical={false} />
+            <CartesianGrid strokeDasharray="2 4" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
             <XAxis
               dataKey="time"
               stroke="#64748b"
               fontSize={11}
               tickLine={false}
-              axisLine={{ stroke: "rgba(56, 189, 248, 0.15)" }}
+              axisLine={{ stroke: "rgba(255, 255, 255, 0.08)" }}
             />
             <YAxis
               stroke="#64748b"
@@ -218,17 +219,17 @@ export const PollutionChart = () => {
               type="monotone"
               dataKey="aqi"
               stroke="#f59e0b"
-              strokeWidth={3}
-              dot={{ r: 4, fill: "#f59e0b", strokeWidth: 2, stroke: "#111827" }}
-              activeDot={{ r: 6, fill: "#00f0ff", stroke: "#111827", strokeWidth: 2 }}
+              strokeWidth={2.5}
+              dot={{ r: 3, fill: "#f59e0b", strokeWidth: 1.5, stroke: "#0b0f15" }}
+              activeDot={{ r: 5, fill: "#38bdf8", stroke: "#0b0f15", strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <p className="mt-2 text-[10px] text-slate-500">
+      <p className="mt-2 text-[10px] font-mono text-slate-500">
         {liveTimeline.length > 1
-          ? `LIVE MODEL FEED: Recent hourly Open-Meteo/CAMS ${aqiScale} output, not historical municipal sensor observations.`
-          : "DEMO DATA: Bundled sample timeline; hourly public model output is unavailable. This is not observed historical air quality."}
+          ? `PROVENANCE: Recent hourly Open-Meteo/CAMS ${aqiScale} output. Station coverage varies across city sectors.`
+          : "PROVENANCE: Bundled reference city profile. Hourly public model feed is currently unavailable."}
       </p>
     </div>
   );

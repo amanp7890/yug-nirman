@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { CloudRain, Leaf, Radio, Trees } from "lucide-react";
 import { useCity } from "../context/CityContext";
 import PageHeader from "../components/common/PageHeader";
@@ -52,109 +52,109 @@ export const Environment = () => {
       <PollutionChart />
 
       {/* Live public weather plus explicit coverage gaps */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-5 rounded-2xl glass-panel border border-cyan-500/20">
-          <div className="flex items-center gap-2 text-sm font-bold text-white pb-3 border-b border-cyan-500/15">
-            <CloudRain className="w-4 h-4 text-sky-400" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="p-5 rounded-xl fieldwork-card border border-slate-800">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-slate-300 pb-3 border-b border-slate-800/80">
+            <CloudRain className="w-4 h-4 text-teal-400" />
             <span>CURRENT WEATHER • {city.name.toUpperCase()}</span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold font-mono text-amber-300">
+            <div className="text-2xl font-bold font-mono text-amber-300">
               {liveWeather?.temperature_2m != null ? `${liveWeather.temperature_2m}°C` : liveWeatherError ? "Unavailable" : "Loading…"}
             </div>
             <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                {condition}{liveWeather?.apparent_temperature != null ? ` · Feels like ${liveWeather.apparent_temperature}°C` : ""}
+              {condition}{liveWeather?.apparent_temperature != null ? ` · Feels like ${liveWeather.apparent_temperature}°C` : ""}
             </p>
           </div>
-          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-sky-300 font-medium">
-            {liveWeather?.time ? `Model time: ${liveWeather.time} · Precipitation ${liveWeather.precipitation ?? "—"} mm` : "Open-Meteo current conditions"}
+          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-400">
+            {liveWeather?.time ? `Model time: ${liveWeather.time} · Precip: ${liveWeather.precipitation ?? "—"} mm` : "Open-Meteo current conditions"}
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl glass-panel border border-cyan-500/20">
-          <div className="flex items-center gap-2 text-sm font-bold text-white pb-3 border-b border-cyan-500/15">
+        <div className="p-5 rounded-xl fieldwork-card border border-slate-800">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-slate-300 pb-3 border-b border-slate-800/80">
             <Trees className="w-4 h-4 text-emerald-400" />
             <span>URBAN TREE CANOPY</span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-extrabold font-mono text-emerald-300">
+            <div className="text-2xl font-bold font-mono text-emerald-300">
               {canopyEstimate.display || `${canopyEstimate.value}%`}
             </div>
-            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
               Saved city-profile green-cover estimate for {city.name}. It is a planning reference, not a current satellite-derived tree-canopy measurement.
             </p>
           </div>
-          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 font-medium">
-            Source: saved city profile · change {canopyEstimate.change} · OSM parks do not measure total tree canopy.
+          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-500">
+            Source: saved city profile · change {canopyEstimate.change}
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl glass-panel border border-cyan-500/20">
-          <div className="flex items-center gap-2 text-sm font-bold text-white pb-3 border-b border-cyan-500/15">
-            <Radio className="w-4 h-4 text-cyan-400" />
-            <span>ACOUSTIC CONDITIONS</span>
+        <div className="p-5 rounded-xl fieldwork-card border border-slate-800">
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-slate-300 pb-3 border-b border-slate-800/80">
+            <Radio className="w-4 h-4 text-slate-400" />
+            <span>ACOUSTIC PRESSURE</span>
           </div>
           <div className="mt-3">
-            <div className="text-lg font-extrabold text-amber-200">{acousticPressure} traffic-noise pressure</div>
-            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-              Stored traffic congestion is {trafficMetric.display || `${trafficIndex}%`}. It is used as a relative noise-pressure proxy; no decibel value is estimated.
+            <div className="text-lg font-bold text-amber-200">{acousticPressure} traffic-noise pressure</div>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Stored traffic congestion is {trafficMetric.display || `${trafficIndex}%`}. Used as a relative noise-pressure proxy; no direct decibel telemetry.
             </p>
           </div>
-          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500">
-            Source: saved traffic profile · no live acoustic sensor or monitoring feed is connected.
+          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-500">
+            Source: saved traffic profile · no live acoustic feed
           </div>
         </div>
       </div>
 
-      <section className="rounded-2xl glass-panel border border-cyan-500/20 p-5" aria-labelledby="community-readings-title">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-cyan-500/15 pb-3">
+      <section className="rounded-xl fieldwork-card border border-slate-800 p-5" aria-labelledby="community-readings-title">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-800 pb-3">
           <div>
-            <div className="flex items-center gap-2 text-sm font-bold text-white">
-              <Radio className="h-4 w-4 text-cyan-400" />
+            <div className="flex items-center gap-2 text-sm font-semibold text-white">
+              <Radio className="h-4 w-4 text-teal-400" />
               <h2 id="community-readings-title">NEARBY COMMUNITY PARTICULATE SENSORS</h2>
             </div>
             <p className="mt-1 text-xs text-slate-400">
-              Sensor.Community observations returned within 25 km of {city.name}; station coverage varies and these are not official municipal monitors.
+              Sensor.Community observations returned within 25 km of {city.name}; station coverage varies and these are citizen-contributed monitors.
             </p>
           </div>
-          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold ${
+          <span className={`rounded font-mono px-2 py-0.5 text-[10px] font-semibold border ${
             liveSensorsAvailable
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
-              : "border-amber-500/30 bg-amber-500/10 text-amber-200"
+              ? "border-emerald-700/60 bg-emerald-950/40 text-emerald-300"
+              : "border-amber-700/60 bg-amber-950/40 text-amber-300"
           }`}>
-            {liveSensorsLoading ? "CHECKING FEED" : liveSensorsAvailable ? "PUBLIC FEED CHECKED" : "OBSERVATIONS UNAVAILABLE"}
+            {liveSensorsLoading ? "CHECKING FEED" : liveSensorsAvailable ? "PUBLIC FEED ACTIVE" : "OBSERVATIONS UNAVAILABLE"}
           </span>
         </div>
 
         {liveSensorsError && !liveSensorsLoading && (
-          <p className="mt-3 text-xs text-rose-200" role="status">{liveSensorsError}</p>
+          <p className="mt-3 text-xs text-rose-300 font-mono" role="status">{liveSensorsError}</p>
         )}
         {!liveSensorsLoading && liveSensorsAvailable && liveSensorStations.length === 0 && (
           <p className="mt-3 text-xs text-slate-400" role="status">
-            No community sensor stations were returned near this city. The Open-Meteo air-quality model above is a separate source.
+            No community sensor stations were returned near this city coordinate. The Open-Meteo atmospheric model above remains the baseline.
           </p>
         )}
         {liveSensorStations.length > 0 && (
           <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {liveSensorStations.slice(0, 6).map((station) => (
-              <article key={station.id} className="rounded-xl border border-slate-800 bg-slate-950/55 p-3">
-                <h3 className="text-xs font-bold text-white">{station.name}</h3>
-                <p className="mt-1 text-[10px] text-slate-500">
-                  {station.coordinates[0].toFixed(4)}, {station.coordinates[1].toFixed(4)}
+              <article key={station.id} className="rounded-lg border border-slate-800 bg-[#0e141f] p-3.5">
+                <h3 className="text-xs font-semibold text-white">{station.name}</h3>
+                <p className="mt-0.5 text-[10px] font-mono text-slate-500">
+                  {station.coordinates[0].toFixed(4)}°N, {station.coordinates[1].toFixed(4)}°E
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {station.measurements.map((measurement) => (
-                    <span key={measurement.parameter} className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-2 py-1 text-[10px] text-cyan-100">
-                      {measurement.parameter}: <strong>{measurement.value} {measurement.unit}</strong>
+                    <span key={measurement.parameter} className="rounded border border-slate-700 bg-slate-800/60 px-2 py-0.5 text-[10px] font-mono text-slate-200">
+                      {measurement.parameter}: <strong className="text-teal-300">{measurement.value} {measurement.unit}</strong>
                     </span>
                   ))}
                   {station.measurements.length === 0 && (
-                    <span className="text-[10px] text-slate-500">No particulate values in the latest station record.</span>
+                    <span className="text-[10px] text-slate-500">No particulate values in latest record.</span>
                   )}
                 </div>
                 {formatLatestObservation(station.measurements) && (
-                  <p className="mt-2 text-[10px] text-slate-500">
-                    Latest observation: {formatLatestObservation(station.measurements)}
+                  <p className="mt-2.5 text-[10px] font-mono text-slate-500">
+                    Latest obs: {formatLatestObservation(station.measurements)}
                   </p>
                 )}
               </article>

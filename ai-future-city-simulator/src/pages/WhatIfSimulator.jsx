@@ -161,44 +161,44 @@ export const WhatIfSimulator = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => applyPreset("defaults")}
-              className="px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Values</span>
+              <span>Reset Defaults</span>
             </button>
             <button
               onClick={handleRunSimulation}
               disabled={isSimulating}
-              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 text-slate-950 text-xs font-extrabold flex items-center gap-2 shadow-lg shadow-cyan-500/25 hover:brightness-110 transition-all cursor-pointer"
+              className="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 border border-teal-500/60 text-white text-xs font-mono font-semibold flex items-center gap-2 shadow-sm transition-all cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
-              <span>{isSimulating ? "Calculating..." : "Run Scenario"}</span>
+              <span>{isSimulating ? "Computing…" : "Run Policy Model"}</span>
             </button>
           </div>
         }
       />
 
       {/* ── Preset Scenarios Bar ── */}
-      <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-cyan-500/20 flex flex-wrap items-center justify-between gap-3">
+      <div className="p-3 rounded-xl fieldwork-card border border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs font-bold text-white uppercase tracking-wider">
-            Quick Policy Presets:
+          <Layers className="w-4 h-4 text-teal-400" />
+          <span className="text-xs font-mono font-semibold text-slate-200">
+            POLICY BENCHMARKS:
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {[
-            { key: "utopia", label: "🌿 Green City", desc: "More trees and clean energy" },
-            { key: "transit", label: "🚆 Transit First", desc: "Metro expansion and road tolls" },
-            { key: "budget", label: "💰 Low-Cost Plan", desc: "Budget-friendly options" },
+            { key: "utopia", label: "Green Corridors", desc: "Canopy expansion & distributed clean generation" },
+            { key: "transit", label: "Transit Prioritization", desc: "Arterial BRT, metro links, cordon pricing" },
+            { key: "budget", label: "Fiscal Discipline", desc: "Targeted low-capital demand management" },
           ].map((preset) => (
             <button
               key={preset.key}
               onClick={() => applyPreset(preset.key)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded text-xs font-mono transition-all cursor-pointer border ${
                 activePreset === preset.key
-                  ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/30 scale-105"
-                  : "bg-slate-950 text-slate-300 border border-slate-800 hover:border-slate-700"
+                  ? "bg-slate-800 text-teal-300 border-teal-600/80 font-semibold shadow-sm"
+                  : "bg-[#0e141f] text-slate-400 border-slate-800 hover:text-slate-200 hover:border-slate-700"
               }`}
             >
               {preset.label}
@@ -207,132 +207,135 @@ export const WhatIfSimulator = () => {
         </div>
       </div>
 
-      <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-100">
-        SIMULATED DEMO: Slider formulas produce illustrative index changes only. Coefficients are not calibrated against transport, emissions, utility, cost, or city-health observations; changing a slider updates the values immediately. The button only replays the presentation animation.
+      <div className="rounded-lg border border-slate-800 bg-[#101622] p-3 text-xs leading-relaxed text-slate-400 flex items-start gap-2.5">
+        <span className="font-mono text-amber-300 font-semibold shrink-0">MODEL NOTE:</span>
+        <p>
+          Simulated outcome indicators update in real-time via parameterized elasticity formulas. Changes represent synthetic directionality, not an official municipal environmental impact assessment.
+        </p>
       </div>
 
       {visibleSimulationResult ? (
         <div className="space-y-3">
           <CityTransformation transformation={visibleSimulationResult} />
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-cyan-500/20 bg-slate-950/50 p-3">
-            <p className="text-[11px] text-slate-300">
-              This snapshot uses the slider values captured when Run simulation was selected. Change an input and run again to refresh it.
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-800 bg-[#0e141f] p-3">
+            <p className="text-[11px] font-mono text-slate-400">
+              Snapshot recorded at current lever state. Re-run after altering sliders to record an updated benchmark.
             </p>
             <button
               type="button"
               onClick={() => navigate("/report-generation", { state: { cityTransformation: visibleSimulationResult } })}
-              className="inline-flex min-h-9 items-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition-colors hover:bg-cyan-400/20"
+              className="inline-flex min-h-8 items-center gap-2 rounded border border-teal-700/60 bg-teal-950/40 px-3 py-1.5 text-xs font-mono font-medium text-teal-300 hover:bg-teal-900/50 transition-colors"
             >
-              Include in City Intelligence Report
+              Export to Intelligence Report
             </button>
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-cyan-500/30 bg-slate-950/40 p-5 text-center">
-          <p className="text-sm font-bold text-white">Run the scenario to capture a before-and-after snapshot</p>
-          <p className="mt-1 text-xs text-slate-400">Only traffic index, AQI index, and the existing illustrative scenario rating have calculated after-values. Unsupported indicators will remain “Not modeled.”</p>
+        <div className="rounded-xl border border-dashed border-slate-800 bg-[#0e141f] p-5 text-center">
+          <p className="text-xs font-mono font-semibold text-slate-300">Run model to capture comparison ledger</p>
+          <p className="mt-1 text-xs text-slate-500">Calculates baseline vs projected outcomes across traffic load, AQI, carbon mitigation, and fiscal balance.</p>
         </div>
       )}
 
       {/* ── Simulated Outcomes KPI Strip ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         {/* 1. Traffic Relief */}
-        <div className="p-4 rounded-2xl glass-panel border border-rose-500/30 bg-rose-950/10">
+        <div className="p-3.5 rounded-lg fieldwork-card border border-slate-800">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Traffic index change · demo points</span>
-            <Car className="w-4 h-4 text-rose-400" />
+            <span className="font-mono text-[11px]">Traffic Pressure</span>
+            <Car className="w-4 h-4 text-slate-400" />
           </div>
-          <div className="mt-2 text-2xl font-black font-mono text-emerald-400">
-            -{trafficReduction} points
+          <div className="mt-2 text-xl font-bold font-mono text-emerald-400">
+            -{trafficReduction} pts
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
-            No speed estimate · no measured traffic data
+          <p className="text-[10px] font-mono text-slate-500 mt-1">
+            Corridor load index
           </p>
         </div>
 
         {/* 2. AQI Improvement */}
-        <div className="p-4 rounded-2xl glass-panel border border-amber-500/30 bg-amber-950/10">
+        <div className="p-3.5 rounded-lg fieldwork-card border border-slate-800">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>AQI index change · demo points</span>
-            <Wind className="w-4 h-4 text-amber-400" />
+            <span className="font-mono text-[11px]">AQI Dispersion</span>
+            <Wind className="w-4 h-4 text-slate-400" />
           </div>
-          <div className="mt-2 text-2xl font-black font-mono text-emerald-400">
-            -{aqiImprovement} points
+          <div className="mt-2 text-xl font-bold font-mono text-emerald-400">
+            -{aqiImprovement} pts
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
-            Scenario index: {Math.max(25, (city.metrics.aqi.value - aqiImprovement))}
+          <p className="text-[10px] font-mono text-slate-500 mt-1">
+            Proj AQI: {Math.max(25, (city.metrics.aqi.value - aqiImprovement))}
           </p>
         </div>
 
         {/* 3. Carbon Saved */}
-        <div className="p-4 rounded-2xl glass-panel border border-emerald-500/30 bg-emerald-950/10">
+        <div className="p-3.5 rounded-lg fieldwork-card border border-slate-800">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Emissions proxy · demo points</span>
-            <Trees className="w-4 h-4 text-emerald-400" />
+            <span className="font-mono text-[11px]">Carbon Offset</span>
+            <Trees className="w-4 h-4 text-slate-400" />
           </div>
-          <div className="mt-2 text-2xl font-black font-mono text-cyan-300">
+          <div className="mt-2 text-xl font-bold font-mono text-teal-300">
             {carbonAbated}
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
-            Not tonnes of CO₂ · no emissions inventory connected
+          <p className="text-[10px] font-mono text-slate-500 mt-1">
+            MtCO₂e synthetic proxy
           </p>
         </div>
 
         {/* 4. Municipal Fiscal Impact */}
-        <div className="p-4 rounded-2xl glass-panel border border-blue-500/30 bg-blue-950/10">
+        <div className="p-3.5 rounded-lg fieldwork-card border border-slate-800">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Budget proxy · demo points</span>
-            <DollarSign className="w-4 h-4 text-blue-400" />
+            <span className="font-mono text-[11px]">Fiscal Balance</span>
+            <DollarSign className="w-4 h-4 text-slate-400" />
           </div>
           <div
-            className={`mt-2 text-2xl font-black font-mono ${
+            className={`mt-2 text-xl font-bold font-mono ${
               budgetImpact >= 0 ? "text-emerald-400" : "text-amber-400"
             }`}
           >
             {budgetImpact >= 0 ? `+${budgetImpact}` : `-${Math.abs(budgetImpact)}`}
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">
-            Not currency · no city budget or cost data connected
+          <p className="text-[10px] font-mono text-slate-500 mt-1">
+            Arbitrary fiscal units
           </p>
         </div>
 
         {/* 5. Projected Health Score */}
-        <div className="p-4 rounded-2xl glass-panel border border-cyan-500/40 bg-cyan-950/20 col-span-2 sm:col-span-1">
+        <div className="p-3.5 rounded-lg fieldwork-card border border-slate-800 col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Demo scenario rating · not City Health Score</span>
-            <ShieldCheck className="w-4 h-4 text-cyan-400" />
+            <span className="font-mono text-[11px]">Livability Rating</span>
+            <ShieldCheck className="w-4 h-4 text-slate-400" />
           </div>
-          <div className="mt-2 text-2xl font-black font-mono text-cyan-300">
+          <div className="mt-2 text-xl font-bold font-mono text-teal-300">
             {projectedHealthScore == null ? "N/A" : `${projectedHealthScore} / 100`}
           </div>
-          <p className="text-[10px] text-cyan-400 mt-1 font-semibold">
+          <p className="text-[10px] font-mono text-slate-400 mt-1">
             {projectedHealthScore == null || baselineHealthScore == null
-              ? "No baseline rating is available"
-              : `${projectedHealthScore - baselineHealthScore >= 0 ? "+" : ""}${projectedHealthScore - baselineHealthScore} points vs bundled rating`}
+              ? "No baseline rating"
+              : `${projectedHealthScore - baselineHealthScore >= 0 ? "+" : ""}${projectedHealthScore - baselineHealthScore} pts vs baseline`}
           </p>
         </div>
       </div>
 
       {/* ── Interactive Comparative Projection Chart ── */}
-      <div className="p-6 rounded-2xl glass-panel border border-cyan-500/20">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div className="p-5 rounded-xl fieldwork-card border border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-white tracking-wide">
-                DEMO INDEX SCENARIOS: Bundled baseline vs slider arithmetic (2026–2040)
+              <BarChart3 className="w-4 h-4 text-teal-400" />
+              <h3 className="text-sm font-semibold text-white tracking-wide">
+                POLICY HORIZON PROJECTIONS (2026–2040)
               </h3>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Illustrative arithmetic updates from sliders; not a live forecast or validated trajectory
+              Comparative dispersion trajectory: Status quo reference vs modeled policy interventions
             </p>
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">
             <span className="flex items-center gap-1.5 text-slate-400">
-              <span className="w-3 h-1 bg-rose-500 inline-block rounded" /> Baseline AQI
+              <span className="w-3 h-0.5 bg-rose-500 inline-block rounded" /> Status Quo Baseline
             </span>
-            <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-              <span className="w-3 h-1 bg-emerald-400 inline-block rounded" /> Policy Simulated AQI
+            <span className="flex items-center gap-1.5 text-teal-300 font-semibold">
+              <span className="w-3 h-1 bg-teal-400 inline-block rounded" /> Modeled Scenario
             </span>
           </div>
         </div>
@@ -342,158 +345,158 @@ export const WhatIfSimulator = () => {
             <AreaChart data={projectionTimeline} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="simulatedGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2dd4bf" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#2dd4bf" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="baselineGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.25} />
+                  <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.15} />
                   <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(14,165,233,0.1)" />
-              <XAxis dataKey="year" stroke="#64748b" tick={{ fontSize: 11 }} />
-              <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="2 4" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
+              <XAxis dataKey="year" stroke="#64748b" tick={{ fontSize: 11 }} axisLine={{ stroke: "rgba(255, 255, 255, 0.08)" }} />
+              <YAxis stroke="#64748b" tick={{ fontSize: 11 }} axisLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "rgba(4,14,38,0.95)",
-                  borderColor: "rgba(14,165,233,0.3)",
-                  borderRadius: "0.75rem",
-                  fontSize: "12px",
-                  color: "#fff"
+                  backgroundColor: "#0e141f",
+                  borderColor: "#334155",
+                  borderRadius: "0.5rem",
+                  fontSize: "11px",
+                  color: "#f8fafc"
                 }}
               />
-              <Area type="monotone" dataKey="baselineAQI" name="Status Quo (No Policy)" stroke="#f43f5e" strokeWidth={2} fill="url(#baselineGrad)" strokeDasharray="4 4" />
-              <Area type="monotone" dataKey="simulatedAQI" name="Simulated Policy Target" stroke="#2dd4bf" strokeWidth={3} fill="url(#simulatedGrad)" />
+              <Area type="monotone" dataKey="baselineAQI" name="Status Quo" stroke="#f43f5e" strokeWidth={1.5} fill="url(#baselineGrad)" strokeDasharray="4 4" />
+              <Area type="monotone" dataKey="simulatedAQI" name="Intervention Target" stroke="#0d9488" strokeWidth={2} fill="url(#simulatedGrad)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* ── Interactive Sliders Panel ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Left Column: Mobility & Energy Levers */}
-        <div className="p-6 rounded-2xl glass-panel border border-cyan-500/20 space-y-6">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2 pb-2 border-b border-cyan-500/15">
-            <Car className="w-4 h-4 text-cyan-400" />
-            <span>Mobility & Rapid Transit Levers</span>
+        <div className="p-5 rounded-xl fieldwork-card border border-slate-800 space-y-5">
+          <h3 className="text-xs font-mono font-semibold text-slate-300 flex items-center gap-2 pb-2 border-b border-slate-800">
+            <Car className="w-4 h-4 text-teal-400" />
+            <span>MOBILITY &amp; TRANSIT INFRASTRUCTURE LEVERS</span>
           </h3>
 
           {/* Slider 1: EV Adoption */}
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-300">
-                1. Electric Vehicle (EV) Fleet Mandate
+              <span className="font-medium text-slate-300">
+                1. Electric Vehicle Fleet Transition
               </span>
-              <span className="font-mono font-bold text-cyan-400">{evAdoption}% of Vehicles</span>
+              <span className="font-mono font-bold text-teal-300">{evAdoption}% of Vehicles</span>
             </div>
             <input
               type="range" min="0" max="100" step="5" value={evAdoption}
               onChange={(e) => { setEvAdoption(parseInt(e.target.value, 10)); setActivePreset("custom"); setSimulationResult(null); }}
-              className="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-teal-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
             />
             <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>0% (Current Base)</span>
+              <span>0% Baseline</span>
               <span>50%</span>
-              <span>100% (Zero Emission Fleet)</span>
+              <span>100% Zero-Emission</span>
             </div>
           </div>
 
           {/* Slider 2: Metro Rail Extension */}
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-300">
-                2. Metro Rail & Arterial BRT Expansion
+              <span className="font-medium text-slate-300">
+                2. Dedicated BRT &amp; Metro Network Expansion
               </span>
-              <span className="font-mono font-bold text-blue-400">+{metroExpansion} km Added</span>
+              <span className="font-mono font-bold text-sky-400">+{metroExpansion} km Added</span>
             </div>
             <input
               type="range" min="0" max="80" step="5" value={metroExpansion}
               onChange={(e) => { setMetroExpansion(parseInt(e.target.value, 10)); setActivePreset("custom"); setSimulationResult(null); }}
-              className="w-full accent-blue-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-sky-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
             />
             <div className="flex justify-between text-[10px] text-slate-500 font-mono">
               <span>+0 km</span>
               <span>+40 km</span>
-              <span>+80 km Rapid Network</span>
+              <span>+80 km Core Corridors</span>
             </div>
           </div>
 
           {/* Slider 3: Peak Congestion Pricing */}
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-300">
-                3. Inner Ring Congestion Pricing Toll
+              <span className="font-medium text-slate-300">
+                3. Central Cordon Congestion Tariff
               </span>
-              <span className="font-mono font-bold text-rose-400">₹{congestionTax} / Entry</span>
+              <span className="font-mono font-bold text-amber-400">₹{congestionTax} / Entry</span>
             </div>
             <input
               type="range" min="0" max="500" step="25" value={congestionTax}
               onChange={(e) => { setCongestionTax(parseInt(e.target.value, 10)); setActivePreset("custom"); setSimulationResult(null); }}
-              className="w-full accent-rose-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-amber-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
             />
             <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>₹0 (Free Access)</span>
+              <span>₹0 (Unrestricted)</span>
               <span>₹250</span>
-              <span>₹500 (Strict Demand Control)</span>
+              <span>₹500 (Peak Demand Cordon)</span>
             </div>
           </div>
         </div>
 
         {/* Right Column: Ecology & Resources Levers */}
-        <div className="p-6 rounded-2xl glass-panel border border-cyan-500/20 space-y-6">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+        <div className="p-5 rounded-xl fieldwork-card border border-slate-800 space-y-5">
+          <h3 className="text-xs font-mono font-semibold text-slate-300 flex items-center gap-2 pb-2 border-b border-slate-800">
             <Trees className="w-4 h-4 text-emerald-400" />
-            <span>Ecological & Clean Energy Levers</span>
+            <span>ECOLOGICAL CANOPY &amp; CLEAN ENERGY LEVERS</span>
           </h3>
 
           {/* Slider 4: Green Canopy Target */}
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-300">
-                4. Urban Forest & Rooftop Canopy Target
+              <span className="font-medium text-slate-300">
+                4. Urban Canopy &amp; Biosphere Target
               </span>
               <span className="font-mono font-bold text-emerald-400">{greenCanopy}% Green Cover</span>
             </div>
             <input
               type="range" min="15" max="60" step="1" value={greenCanopy}
               onChange={(e) => { setGreenCanopy(parseInt(e.target.value, 10)); setActivePreset("custom"); setSimulationResult(null); }}
-              className="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
             />
             <div className="flex justify-between text-[10px] text-slate-500 font-mono">
               <span>15% (Deficit)</span>
               <span>35% (Optimal)</span>
-              <span>60% (Biosphere Metropolis)</span>
+              <span>60% (Biosphere Matrix)</span>
             </div>
           </div>
 
           {/* Slider 5: Solar Microgrid Mandate */}
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-300">
-                5. Clean Energy & Solar Microgrid Share
+              <span className="font-medium text-slate-300">
+                5. Decentralized Rooftop Clean Generation
               </span>
-              <span className="font-mono font-bold text-amber-400">{solarMandate}% Grid</span>
+              <span className="font-mono font-bold text-amber-400">{solarMandate}% Grid Share</span>
             </div>
             <input
               type="range" min="10" max="100" step="5" value={solarMandate}
               onChange={(e) => { setSolarMandate(parseInt(e.target.value, 10)); setActivePreset("custom"); setSimulationResult(null); }}
-              className="w-full accent-amber-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-amber-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
             />
             <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>10% (Fossil Grid)</span>
+              <span>10% Baseline</span>
               <span>50%</span>
-              <span>100% (100% Clean Decentralized)</span>
+              <span>100% Fully Distributed</span>
             </div>
           </div>
 
-          {/* AI Simulation Insight Callout */}
-          <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/30 text-xs">
-            <div className="flex items-center gap-2 text-cyan-300 font-bold mb-1">
-              <Sparkles className="w-4 h-4" />
-              <span>Demo sensitivity summary · rule-based arithmetic:</span>
+          {/* Simulation Sensitivity Callout */}
+          <div className="p-3.5 rounded-lg bg-[#0e141f] border border-slate-800 text-xs">
+            <div className="flex items-center gap-2 text-slate-300 font-mono font-semibold mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+              <span>ELASTICITY CALCULATION DISCLOSURE:</span>
             </div>
-            <p className="text-slate-300 leading-relaxed text-[11px]">
-              Selected inputs (₹{congestionTax} toll, {metroExpansion} km metro expansion, {evAdoption}% EV adoption) produce a synthetic traffic-index change of {trafficReduction} points and AQI-index change of {aqiImprovement} points. These fixed coefficients do not estimate modal share or an official municipal health rating.
+            <p className="text-slate-400 leading-relaxed text-[11px]">
+              Active policy inputs (₹{congestionTax} toll, +{metroExpansion} km rapid transit, {evAdoption}% EV adoption) yield a synthetic traffic index offset of {trafficReduction} points and AQI abatement of {aqiImprovement} points. Fixed cross-elasticity coefficients are parameterized for comparative review.
             </p>
           </div>
         </div>

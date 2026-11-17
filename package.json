@@ -1,0 +1,15 @@
+{
+  "name": "yug-nirman",
+  "private": true,
+  "version": "1.0.0",
+  "description": "YUG NIRMAN — City Decision Intelligence Platform. The actual app is in ai-future-city-simulator/.",
+  "scripts": {
+    "dev": "npm --prefix ai-future-city-simulator run dev",
+    "build": "npm --prefix ai-future-city-simulator run build",
+    "test": "npm --prefix ai-future-city-simulator test",
+    "install:app": "npm --prefix ai-future-city-simulator install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
